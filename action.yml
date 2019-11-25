@@ -1,0 +1,13 @@
+name: 'Set up Unity'
+description: 'set up Unity Editor'
+author: 'pCYSl5EDgo'
+inputs:
+  unity-version:
+    description: 'Unity version'
+    required: true
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+branding:
+  icon: 'archive'
+  color: 'gray-dark'

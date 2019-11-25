@@ -1,0 +1,33 @@
+{
+  "name": "setup-unity",
+  "version": "1.0.0",
+  "description": "Set up your GitHub Actions workflow with a specific version of the Unity Editor",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pCYSl5EDgo/setup-unity.git"
+  },
+  "author": "pCYSl5EDgo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pCYSl5EDgo/setup-unity/issues"
+  },
+  "homepage": "https://github.com/pCYSl5EDgo/setup-unity#readme",
+  "devDependencies": {
+    "@types/jsdom": "^12.2.4",
+    "@types/node": "^12.12.12",
+    "typescript": "3.7.2"
+  },
+  "dependencies": {
+    "@actions/core": "^1.2.0",
+    "@actions/exec": "^1.0.1",
+    "@actions/io": "^1.0.1",
+    "@actions/tool-cache": "^1.1.2",
+    "jsdom": "^15.2.1",
+    "sync-request": "^6.1.0"
+  }
+}
