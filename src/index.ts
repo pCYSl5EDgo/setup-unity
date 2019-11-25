@@ -90,15 +90,18 @@ function GetDownloadUrl(sha1: string): string {
     }
 }
 
-async function ExecuteSetUp() {
+async function ExecuteSetUp(download_url:string) {
     switch (process.platform) {
         case "win32":
+            await exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile UnitySetup64.exe');
             await exec.exec('UnitySetup64.exe /S /D="C:\Program Files\Unity"');
             break;
         case "darwin":
+            await exec.exec('curl -OL ' + download_url)
             await exec.exec("sudo installer -package Unity.pkg -target /");
             break;
         default:
+            await exec.exec('wget ' + download_url + ' -O UnitySetUp');
             await exec.exec('sudo chmod +x UnitySetUp');
             await exec.exec('echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity');
             break;
@@ -109,8 +112,7 @@ async function Run() {
     const version = core.getInput("unity-version", { required: true });
     const sha1 = GetSha1(version);
     const download_url = GetDownloadUrl(sha1);
-    fs.writeFileSync(GetSetUpName(), request("GET", download_url).body);
-    await ExecuteSetUp();
+    await ExecuteSetUp(download_url);
 }
 
 Run();

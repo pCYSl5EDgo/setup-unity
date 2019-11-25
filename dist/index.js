@@ -51,7 +51,6 @@ var core = __importStar(require("@actions/core"));
 var path = __importStar(require("path"));
 var jsdom = __importStar(require("jsdom"));
 var sync_request_1 = __importDefault(require("sync-request"));
-var fs = __importStar(require("fs"));
 var exec = __importStar(require("@actions/exec"));
 var IS_WINDOWS = process.platform === 'win32';
 if (!tempDirectory) {
@@ -132,7 +131,7 @@ function GetDownloadUrl(sha1) {
             return "https://beta.unity3d.com/download/" + sha1 + "/UnitySetup";
     }
 }
-function ExecuteSetUp() {
+function ExecuteSetUp(download_url) {
     return __awaiter(this, void 0, void 0, function () {
         var _a;
         return __generator(this, function (_b) {
@@ -141,25 +140,34 @@ function ExecuteSetUp() {
                     _a = process.platform;
                     switch (_a) {
                         case "win32": return [3 /*break*/, 1];
-                        case "darwin": return [3 /*break*/, 3];
+                        case "darwin": return [3 /*break*/, 4];
                     }
-                    return [3 /*break*/, 5];
-                case 1: return [4 /*yield*/, exec.exec('UnitySetup64.exe /S /D="C:\Program Files\Unity"')];
+                    return [3 /*break*/, 7];
+                case 1: return [4 /*yield*/, exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile UnitySetup64.exe')];
                 case 2:
                     _b.sent();
-                    return [3 /*break*/, 8];
-                case 3: return [4 /*yield*/, exec.exec("sudo installer -package Unity.pkg -target /")];
-                case 4:
+                    return [4 /*yield*/, exec.exec('UnitySetup64.exe /S /D="C:\Program Files\Unity"')];
+                case 3:
                     _b.sent();
-                    return [3 /*break*/, 8];
-                case 5: return [4 /*yield*/, exec.exec('sudo chmod +x UnitySetUp')];
+                    return [3 /*break*/, 11];
+                case 4: return [4 /*yield*/, exec.exec('curl -OL ' + download_url)];
+                case 5:
+                    _b.sent();
+                    return [4 /*yield*/, exec.exec("sudo installer -package Unity.pkg -target /")];
                 case 6:
                     _b.sent();
-                    return [4 /*yield*/, exec.exec('echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity')];
-                case 7:
+                    return [3 /*break*/, 11];
+                case 7: return [4 /*yield*/, exec.exec('wget ' + download_url + ' -O UnitySetUp')];
+                case 8:
                     _b.sent();
-                    return [3 /*break*/, 8];
-                case 8: return [2 /*return*/];
+                    return [4 /*yield*/, exec.exec('sudo chmod +x UnitySetUp')];
+                case 9:
+                    _b.sent();
+                    return [4 /*yield*/, exec.exec('echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity')];
+                case 10:
+                    _b.sent();
+                    return [3 /*break*/, 11];
+                case 11: return [2 /*return*/];
             }
         });
     });
@@ -173,8 +181,7 @@ function Run() {
                     version = core.getInput("unity-version", { required: true });
                     sha1 = GetSha1(version);
                     download_url = GetDownloadUrl(sha1);
-                    fs.writeFileSync(GetSetUpName(), sync_request_1.default("GET", download_url).body);
-                    return [4 /*yield*/, ExecuteSetUp()];
+                    return [4 /*yield*/, ExecuteSetUp(download_url)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];
