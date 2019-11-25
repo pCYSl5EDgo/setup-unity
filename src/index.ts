@@ -29,9 +29,11 @@ function GetSha1Final(major: number, minor: number, patch: number): string {
     core.warning("html\n" + html.toString());
     const dom = new jsdom.JSDOM(html);
     const div0 = dom.window.document.getElementsByClassName("faq").item(0) as HTMLDivElement;
+    core.warning("div0\n" + div0.innerHTML);
     const p0 = div0.getElementsByClassName("info").item(0) as HTMLParagraphElement;
+    core.warning("p0\n" + p0.innerHTML);
     const a0 = p0.children.item(0) as HTMLAnchorElement;
-    core.warning(a0.innerHTML);
+    core.warning("a0\n" + a0.innerHTML);
     const href:String = a0.href;
     return href.substr(44, 12);
 }
