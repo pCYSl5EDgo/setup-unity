@@ -31,7 +31,7 @@ function GetSha1Final(major: number, minor: number, patch: number): string {
     const p0 = div0.getElementsByClassName("info").item(0) as HTMLParagraphElement;
     const a0 = p0.children.item(0) as HTMLAnchorElement;
     const href = a0.href;
-    return href.slice(44, 12);
+    return href.substr(44, 12);
 }
 
 function GetSha1Alpha(version: string): string {
@@ -41,7 +41,7 @@ function GetSha1Alpha(version: string): string {
     const p0 = div0.getElementsByClassName("info").item(0) as HTMLParagraphElement;
     const a0 = p0.children.item(0) as HTMLAnchorElement;
     const href = a0.href;
-    return href.slice(34, 12);
+    return href.substr(34, 12);
 }
 
 function GetSha1Beta(version: string): string {
@@ -51,7 +51,7 @@ function GetSha1Beta(version: string): string {
     const p0 = div0.getElementsByClassName("info").item(0) as HTMLParagraphElement;
     const a0 = p0.children.item(0) as HTMLAnchorElement;
     const href = a0.href;
-    return href.slice(34, 12);
+    return href.substr(34, 12);
 }
 
 function GetSha1(version: string): string {
@@ -69,7 +69,7 @@ function GetSha1(version: string): string {
     const minorVersionNum = Number.parseInt(minorVersionStr);
     const indexOfFinal = patchVersionStr.indexOf("f");
     if (indexOfFinal === -1) throw new Error("invalid version");
-    return GetSha1Final(majorVersionNum, minorVersionNum, Number.parseInt(patchVersionStr.slice(0, indexOfFinal)));
+    return GetSha1Final(majorVersionNum, minorVersionNum, Number.parseInt(patchVersionStr.substr(0, indexOfFinal)));
 }
 
 function GetSetUpName() {
