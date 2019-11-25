@@ -196,8 +196,8 @@ function ExecuteSetUp(download_url) {
                     cp.execSync('sudo apt-get -y install libxtst6');
                     cp.execSync('sudo apt-get -y install zlib1g');
                     cp.execSync('sudo apt-get -y install npm');
-                    cp.execSync('sudo apt-get -y install libpq');
                     cp.execSync('sudo apt-get -y install debconf');
+                    cp.execSync('sudo apt-get -y install libpq');
                     return [4 /*yield*/, exec.exec('wget ' + download_url + ' -O UnitySetUp')];
                 case 8:
                     _b.sent();
