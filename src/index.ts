@@ -142,6 +142,8 @@ async function ExecuteSetUp(download_url: string, version: string) {
             await exec.exec('wget ' + download_url + ' -O UnitySetUp');
             await exec.exec('sudo chmod +x UnitySetUp');
             cp.execSync('echo y | ./UnitySetUp --unattended --install-location="/opt/Unity-' + version + '"');
+            cp.execSync('cd /opt/ && mv Unity-' + version + '/ Unity/');
+            await exec.exec('sudo rm -f UnitySetUp');
             break;
     }
 }

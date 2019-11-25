@@ -150,14 +150,14 @@ function ExecuteSetUp(download_url, version) {
                     return [4 /*yield*/, exec.exec('UnitySetup64.exe /S /D="C:\Program Files\Unity"')];
                 case 3:
                     _b.sent();
-                    return [3 /*break*/, 10];
+                    return [3 /*break*/, 11];
                 case 4: return [4 /*yield*/, exec.exec('curl -OL ' + download_url)];
                 case 5:
                     _b.sent();
                     return [4 /*yield*/, exec.exec("sudo installer -package Unity.pkg -target /")];
                 case 6:
                     _b.sent();
-                    return [3 /*break*/, 10];
+                    return [3 /*break*/, 11];
                 case 7:
                     cp.execSync('sudo apt-get update');
                     cp.execSync('sudo apt-get -y install gconf-service');
@@ -204,8 +204,12 @@ function ExecuteSetUp(download_url, version) {
                 case 9:
                     _b.sent();
                     cp.execSync('echo y | ./UnitySetUp --unattended --install-location="/opt/Unity-' + version + '"');
-                    return [3 /*break*/, 10];
-                case 10: return [2 /*return*/];
+                    cp.execSync('cd /opt/ && mv Unity-' + version + '/ Unity/');
+                    return [4 /*yield*/, exec.exec('sudo rm -f UnitySetUp')];
+                case 10:
+                    _b.sent();
+                    return [3 /*break*/, 11];
+                case 11: return [2 /*return*/];
             }
         });
     });
