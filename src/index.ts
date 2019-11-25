@@ -4,8 +4,8 @@ import * as core from '@actions/core';
 import * as path from 'path';
 import * as jsdom from "jsdom";
 import { default as request } from 'sync-request';
-import * as fs from 'fs';
 import * as exec from '@actions/exec';
+import * as cp from 'child_process';
 
 const IS_WINDOWS = process.platform === 'win32';
 
@@ -105,13 +105,8 @@ async function ExecuteSetUp(download_url:string) {
             //await exec.exec('sudo apt-get -y install libgtk-3-dev libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev libnss3-dev libsound2-dev libgconf2-dev');
             await exec.exec('wget ' + download_url + ' -O UnitySetUp');
             await exec.exec('sudo chmod +x UnitySetUp');
-            fs.writeFileSync('tmp_a.txt', "y\n");
-            await exec.exec('cat tmp_a.txt');
-            //await exec.exec('echo -n < tmp_a.txt');
-            //await exec.exec('./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity < tmp_a.txt');
+            cp.execSync('echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity')
             await exec.exec('./UnitySetUp', ['--help']);
-            await exec.exec('./UnitySetUp', ['--unattended', '--install-location=/opt/Unity', '--components=Unity']);
-            await exec.exec('rm tmp_a.txt');
             break;
     }
 }

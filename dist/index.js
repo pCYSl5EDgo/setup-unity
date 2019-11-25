@@ -51,8 +51,8 @@ var core = __importStar(require("@actions/core"));
 var path = __importStar(require("path"));
 var jsdom = __importStar(require("jsdom"));
 var sync_request_1 = __importDefault(require("sync-request"));
-var fs = __importStar(require("fs"));
 var exec = __importStar(require("@actions/exec"));
+var cp = __importStar(require("child_process"));
 var IS_WINDOWS = process.platform === 'win32';
 if (!tempDirectory) {
     var baseLocation = void 0;
@@ -150,14 +150,14 @@ function ExecuteSetUp(download_url) {
                     return [4 /*yield*/, exec.exec('UnitySetup64.exe /S /D="C:\Program Files\Unity"')];
                 case 3:
                     _b.sent();
-                    return [3 /*break*/, 14];
+                    return [3 /*break*/, 11];
                 case 4: return [4 /*yield*/, exec.exec('curl -OL ' + download_url)];
                 case 5:
                     _b.sent();
                     return [4 /*yield*/, exec.exec("sudo installer -package Unity.pkg -target /")];
                 case 6:
                     _b.sent();
-                    return [3 /*break*/, 14];
+                    return [3 /*break*/, 11];
                 case 7: 
                 //await exec.exec('sudo apt-get update');
                 //await exec.exec('sudo apt-get -y install libgtk-3-dev libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev libnss3-dev libsound2-dev libgconf2-dev');
@@ -169,25 +169,12 @@ function ExecuteSetUp(download_url) {
                     return [4 /*yield*/, exec.exec('sudo chmod +x UnitySetUp')];
                 case 9:
                     _b.sent();
-                    fs.writeFileSync('tmp_a.txt', "y\n");
-                    return [4 /*yield*/, exec.exec('cat tmp_a.txt')];
+                    cp.execSync('echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity');
+                    return [4 /*yield*/, exec.exec('./UnitySetUp', ['--help'])];
                 case 10:
                     _b.sent();
-                    //await exec.exec('echo -n < tmp_a.txt');
-                    //await exec.exec('./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity < tmp_a.txt');
-                    return [4 /*yield*/, exec.exec('./UnitySetUp', ['--help'])];
-                case 11:
-                    //await exec.exec('echo -n < tmp_a.txt');
-                    //await exec.exec('./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity < tmp_a.txt');
-                    _b.sent();
-                    return [4 /*yield*/, exec.exec('./UnitySetUp', ['--unattended', '--install-location=/opt/Unity', '--components=Unity'])];
-                case 12:
-                    _b.sent();
-                    return [4 /*yield*/, exec.exec('rm tmp_a.txt')];
-                case 13:
-                    _b.sent();
-                    return [3 /*break*/, 14];
-                case 14: return [2 /*return*/];
+                    return [3 /*break*/, 11];
+                case 11: return [2 /*return*/];
             }
         });
     });
