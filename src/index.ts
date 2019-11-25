@@ -35,7 +35,7 @@ function GetSha1Final(major: number, minor: number, patch: number): string {
     //core.warning("div0\n" + div0.innerHTML);
     const p0 = div0.getElementsByClassName("info").item(0) as HTMLParagraphElement;
     //core.warning("p0\n" + p0.innerHTML);
-    const a0 = p0.children.item(0) as HTMLAnchorElement;
+    const a0 = p0.childNodes.item(0) as HTMLAnchorElement;
     core.warning("a0\n" + a0.outerHTML);
     const href:String = a0.href;
     return href.substr(44, 12);
