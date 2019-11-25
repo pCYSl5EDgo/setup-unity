@@ -132,7 +132,7 @@ function GetDownloadUrl(sha1) {
             return "https://beta.unity3d.com/download/" + sha1 + "/UnitySetup";
     }
 }
-function ExecuteSetUp(download_url, version, install_directory) {
+function ExecuteSetUp(download_url, version) {
     return __awaiter(this, void 0, void 0, function () {
         var _a;
         return __generator(this, function (_b) {
@@ -141,38 +141,27 @@ function ExecuteSetUp(download_url, version, install_directory) {
                     _a = process.platform;
                     switch (_a) {
                         case "win32": return [3 /*break*/, 1];
-                        case "darwin": return [3 /*break*/, 8];
+                        case "darwin": return [3 /*break*/, 5];
                     }
-                    return [3 /*break*/, 13];
+                    return [3 /*break*/, 8];
                 case 1: return [4 /*yield*/, exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile UnitySetup64.exe')];
                 case 2:
                     _b.sent();
-                    if (!install_directory) return [3 /*break*/, 4];
-                    return [4 /*yield*/, exec.exec('UnitySetup64.exe /S /D="' + install_directory + '"')];
+                    return [4 /*yield*/, exec.exec('UnitySetup64.exe /S /D="C:\Program Files\Unity"')];
                 case 3:
                     _b.sent();
-                    return [3 /*break*/, 6];
-                case 4: return [4 /*yield*/, exec.exec('UnitySetup64.exe /S /D="C:\Program Files\Unity"')];
-                case 5:
+                    return [4 /*yield*/, exec.exec('Remove-Item -Path UnitySetup64.exe')];
+                case 4:
                     _b.sent();
-                    _b.label = 6;
-                case 6: return [4 /*yield*/, exec.exec('Remove-Item -Path UnitySetup64.exe')];
-                case 7:
-                    _b.sent();
-                    return [3 /*break*/, 17];
-                case 8: return [4 /*yield*/, exec.exec('curl -OL ' + download_url)];
-                case 9:
+                    return [3 /*break*/, 12];
+                case 5: return [4 /*yield*/, exec.exec('curl -OL ' + download_url)];
+                case 6:
                     _b.sent();
                     return [4 /*yield*/, exec.exec("sudo installer -package Unity.pkg -target /")];
-                case 10:
+                case 7:
                     _b.sent();
-                    if (!install_directory) return [3 /*break*/, 12];
-                    return [4 /*yield*/, exec.exec('sudo mv -T /Applications/Unity/ "' + install_directory + '"')];
-                case 11:
-                    _b.sent();
-                    _b.label = 12;
-                case 12: return [3 /*break*/, 17];
-                case 13:
+                    return [3 /*break*/, 12];
+                case 8:
                     cp.execSync('sudo apt-get update');
                     cp.execSync('sudo apt-get -y install gconf-service');
                     cp.execSync('sudo apt-get -y install lib32gcc1');
@@ -212,38 +201,32 @@ function ExecuteSetUp(download_url, version, install_directory) {
                     cp.execSync('sudo apt-get -y install npm');
                     cp.execSync('sudo apt-get -y install debconf');
                     return [4 /*yield*/, exec.exec('wget ' + download_url + ' -O UnitySetUp')];
-                case 14:
+                case 9:
                     _b.sent();
                     return [4 /*yield*/, exec.exec('sudo chmod +x UnitySetUp')];
-                case 15:
+                case 10:
                     _b.sent();
                     cp.execSync('echo y | ./UnitySetUp --unattended --install-location="/opt/Unity-' + version + '"');
-                    if (install_directory) {
-                        cp.execSync('mv /opt/Unity-' + version + '/ ' + install_directory);
-                    }
-                    else {
-                        cp.execSync('mv /opt/Unity-' + version + '/ /opt/Unity/');
-                    }
+                    cp.execSync('mv /opt/Unity-' + version + '/ /opt/Unity/');
                     return [4 /*yield*/, exec.exec('sudo rm -f UnitySetUp')];
-                case 16:
+                case 11:
                     _b.sent();
-                    return [3 /*break*/, 17];
-                case 17: return [2 /*return*/];
+                    return [3 /*break*/, 12];
+                case 12: return [2 /*return*/];
             }
         });
     });
 }
 function Run() {
     return __awaiter(this, void 0, void 0, function () {
-        var version, sha1, download_url, install_directory;
+        var version, sha1, download_url;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     version = core.getInput("unity-version", { required: true });
                     sha1 = GetSha1(version);
                     download_url = GetDownloadUrl(sha1);
-                    install_directory = core.getInput("install-directory", { required: false });
-                    return [4 /*yield*/, ExecuteSetUp(download_url, version, install_directory)];
+                    return [4 /*yield*/, ExecuteSetUp(download_url, version)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];
