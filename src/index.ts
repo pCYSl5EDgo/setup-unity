@@ -71,11 +71,11 @@ function GetSha1(version: string): string {
 function GetSetUpName() {
     switch (process.platform) {
         case "darwin":
-            return "SetUp.pkg";
+            return "Unity.pkg";
         case "win32":
-            return "SetUp.exe";
+            return "UnitySetup64.exe";
         default:
-            return "SetUp";
+            return "UnitySetUp";
     }
 }
 
@@ -99,7 +99,7 @@ function ExecuteSetUp() {
             execSync("sudo installer -package Unity.pkg -target /");
             break;
         default:
-            execSync('sudo chmod +x UnitySetup && echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity && sudo rm UnitySetUp && sudo rm -rf /tmp/unity && sudo rm -rf /root/.local/share/Trash/*');
+            execSync('sudo chmod +x UnitySetUp && echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity && sudo rm UnitySetUp && sudo rm -rf /tmp/unity && sudo rm -rf /root/.local/share/Trash/*');
             break;
     }
 }
