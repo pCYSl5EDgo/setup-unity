@@ -44,7 +44,8 @@ function GetSha1Alpha(version: string): string {
     const html = request("GET", "https://unity3d.com/unity/alpha/" + version).body;
     const dom = new jsdom.JSDOM(html);
     const div0 = dom.window.document.getElementsByClassName("faq").item(0) as HTMLDivElement;
-    const p0 = div0.childNodes.item(1) as HTMLParagraphElement;
+    const div1 = div0.childNodes.item(1) as HTMLDivElement;
+    const p0 = div1.childNodes.item(0) as HTMLParagraphElement;
     const a0 = p0.childNodes.item(0) as HTMLAnchorElement;
     const href:String = a0.href;
     return href.substr(34, 12);
@@ -54,7 +55,8 @@ function GetSha1Beta(version: string): string {
     const html = request("GET", "https://unity3d.com/unity/beta/" + version).body;
     const dom = new jsdom.JSDOM(html);
     const div0 = dom.window.document.getElementsByClassName("faq").item(0) as HTMLDivElement;
-    const p0 = div0.childNodes.item(1) as HTMLParagraphElement;
+    const div1 = div0.childNodes.item(1) as HTMLDivElement;
+    const p0 = div1.childNodes.item(0) as HTMLParagraphElement;
     const a0 = p0.children.item(0) as HTMLAnchorElement;
     const href:String = a0.href;
     return href.substr(34, 12);
