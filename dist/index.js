@@ -173,13 +173,15 @@ function ExecuteSetUp(download_url) {
                     return [4 /*yield*/, exec.exec('cat tmp_a.txt')];
                 case 10:
                     _b.sent();
-                    return [4 /*yield*/, exec.exec('echo -n < tmp_a.txt')];
-                case 11:
-                    _b.sent();
+                    //await exec.exec('echo -n < tmp_a.txt');
                     //await exec.exec('./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity < tmp_a.txt');
+                    return [4 /*yield*/, exec.exec('./UnitySetUp', ['--help'])];
+                case 11:
+                    //await exec.exec('echo -n < tmp_a.txt');
+                    //await exec.exec('./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity < tmp_a.txt');
+                    _b.sent();
                     return [4 /*yield*/, exec.exec('rm tmp_a.txt')];
                 case 12:
-                    //await exec.exec('./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity < tmp_a.txt');
                     _b.sent();
                     return [3 /*break*/, 13];
                 case 13: return [2 /*return*/];
