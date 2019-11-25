@@ -43,9 +43,7 @@ function GetSha1Final(major, minor, patch) {
     core.warning("faq count\n" + dom.window.document.getElementsByClassName("faq").length);
     var div0 = dom.window.document.getElementsByClassName("faq").item(0);
     //core.warning("div0\n" + div0.innerHTML);
-    var p0 = div0.childNodes.item(1);
-    core.warning("p0\n" + p0.innerHTML);
-    var a0 = p0.childNodes.item(0);
+    var a0 = div0.childNodes.item(1);
     core.warning("a0\n" + a0.innerHTML);
     var href = a0.href;
     return href.substr(44, 12);
