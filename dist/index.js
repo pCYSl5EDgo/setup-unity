@@ -40,6 +40,7 @@ function GetSha1Final(major, minor, patch) {
     var div0 = dom.window.document.getElementsByClassName("faq").item(0);
     var p0 = div0.getElementsByClassName("info").item(0);
     var a0 = p0.children.item(0);
+    core.debug(a0.innerHTML);
     var href = a0.href;
     return href.substr(44, 12);
 }

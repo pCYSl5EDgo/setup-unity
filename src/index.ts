@@ -30,7 +30,8 @@ function GetSha1Final(major: number, minor: number, patch: number): string {
     const div0 = dom.window.document.getElementsByClassName("faq").item(0) as HTMLDivElement;
     const p0 = div0.getElementsByClassName("info").item(0) as HTMLParagraphElement;
     const a0 = p0.children.item(0) as HTMLAnchorElement;
-    const href = a0.href;
+    core.debug(a0.innerHTML);
+    const href:String = a0.href;
     return href.substr(44, 12);
 }
 
@@ -40,7 +41,7 @@ function GetSha1Alpha(version: string): string {
     const div0 = dom.window.document.getElementsByClassName("faq").item(0) as HTMLDivElement;
     const p0 = div0.getElementsByClassName("info").item(0) as HTMLParagraphElement;
     const a0 = p0.children.item(0) as HTMLAnchorElement;
-    const href = a0.href;
+    const href:String = a0.href;
     return href.substr(34, 12);
 }
 
@@ -50,7 +51,7 @@ function GetSha1Beta(version: string): string {
     const div0 = dom.window.document.getElementsByClassName("faq").item(0) as HTMLDivElement;
     const p0 = div0.getElementsByClassName("info").item(0) as HTMLParagraphElement;
     const a0 = p0.children.item(0) as HTMLAnchorElement;
-    const href = a0.href;
+    const href:String = a0.href;
     return href.substr(34, 12);
 }
 
@@ -59,7 +60,7 @@ function GetSha1(version: string): string {
     const majorVersionStr = splitVersion[0];
     const majorVersionNum = Number.parseInt(majorVersionStr);
     if (majorVersionNum < 2017) throw new Error(majorVersionStr + " should not be less than 2017");
-    const patchVersionStr = splitVersion[2];
+    const patchVersionStr:String = splitVersion[2];
 
     const indexOfAlpha = patchVersionStr.indexOf("a");
     if (indexOfAlpha !== -1) return GetSha1Alpha(version);
