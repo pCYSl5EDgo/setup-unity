@@ -167,7 +167,7 @@ function ExecuteSetUp(download_url) {
                     return [4 /*yield*/, exec.exec('sudo chmod +x UnitySetUp')];
                 case 9:
                     _b.sent();
-                    cp.execSync('echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity');
+                    cp.execSync('echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity,Windows,Windows-Mono,Mac,Mac-Mono,WebGL');
                     return [3 /*break*/, 10];
                 case 10: return [2 /*return*/];
             }
