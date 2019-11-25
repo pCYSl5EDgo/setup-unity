@@ -110,6 +110,7 @@ async function ExecuteSetUp(download_url:string) {
             //await exec.exec('echo -n < tmp_a.txt');
             //await exec.exec('./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity < tmp_a.txt');
             await exec.exec('./UnitySetUp', ['--help']);
+            await exec.exec('UnitySetUp', ['--unattended', '--install-location=/opt/Unity/', '--components=Unity']);
             await exec.exec('rm tmp_a.txt');
             break;
     }
