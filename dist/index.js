@@ -41,7 +41,7 @@ function GetSha1Final(major, minor, patch) {
     var p0 = div0.getElementsByClassName("info").item(0);
     var a0 = p0.children.item(0);
     var href = a0.href;
-    return href.slice(44, 12);
+    return href.substr(44, 12);
 }
 function GetSha1Alpha(version) {
     var html = sync_request_1.default("GET", "https://unity3d.com/unity/alpha/" + version).body;
@@ -50,7 +50,7 @@ function GetSha1Alpha(version) {
     var p0 = div0.getElementsByClassName("info").item(0);
     var a0 = p0.children.item(0);
     var href = a0.href;
-    return href.slice(34, 12);
+    return href.substr(34, 12);
 }
 function GetSha1Beta(version) {
     var html = sync_request_1.default("GET", "https://unity3d.com/unity/beta/" + version).body;
@@ -59,7 +59,7 @@ function GetSha1Beta(version) {
     var p0 = div0.getElementsByClassName("info").item(0);
     var a0 = p0.children.item(0);
     var href = a0.href;
-    return href.slice(34, 12);
+    return href.substr(34, 12);
 }
 function GetSha1(version) {
     var splitVersion = version.split('.');
@@ -79,7 +79,7 @@ function GetSha1(version) {
     var indexOfFinal = patchVersionStr.indexOf("f");
     if (indexOfFinal === -1)
         throw new Error("invalid version");
-    return GetSha1Final(majorVersionNum, minorVersionNum, Number.parseInt(patchVersionStr.slice(0, indexOfFinal)));
+    return GetSha1Final(majorVersionNum, minorVersionNum, Number.parseInt(patchVersionStr.substr(0, indexOfFinal)));
 }
 function GetSetUpName() {
     switch (process.platform) {
