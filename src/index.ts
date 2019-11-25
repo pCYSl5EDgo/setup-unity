@@ -30,11 +30,14 @@ function GetSha1Final(major: number, minor: number, patch: number): string {
     const html = request("GET", path).body;
     //core.warning("html\n" + html.toString());
     const dom = new jsdom.JSDOM(html);
-    core.warning("faq count\n" + dom.window.document.getElementsByClassName("faq").length);
+    //core.warning("faq count\n" + dom.window.document.getElementsByClassName("faq").length);
     const div0 = dom.window.document.getElementsByClassName("faq").item(0) as HTMLDivElement;
     //core.warning("div0\n" + div0.innerHTML);
     const div1 = div0.childNodes.item(1) as HTMLDivElement;
+    core.warning(div0.tagName);
+    core.warning(div1.tagName);
     const p0 = div1.childNodes.item(0) as HTMLParagraphElement;
+    core.warning(p0.tagName);
     const a0 = p0.childNodes.item(0) as HTMLAnchorElement;
     const href:String = a0.href;
     return href.substr(44, 12);

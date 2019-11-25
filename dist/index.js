@@ -40,11 +40,14 @@ function GetSha1Final(major, minor, patch) {
     var html = sync_request_1.default("GET", path).body;
     //core.warning("html\n" + html.toString());
     var dom = new jsdom.JSDOM(html);
-    core.warning("faq count\n" + dom.window.document.getElementsByClassName("faq").length);
+    //core.warning("faq count\n" + dom.window.document.getElementsByClassName("faq").length);
     var div0 = dom.window.document.getElementsByClassName("faq").item(0);
     //core.warning("div0\n" + div0.innerHTML);
     var div1 = div0.childNodes.item(1);
+    core.warning(div0.tagName);
+    core.warning(div1.tagName);
     var p0 = div1.childNodes.item(0);
+    core.warning(p0.tagName);
     var a0 = p0.childNodes.item(0);
     var href = a0.href;
     return href.substr(44, 12);
