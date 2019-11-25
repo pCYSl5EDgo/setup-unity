@@ -34,44 +34,27 @@ if (!tempDirectory) {
     }
     tempDirectory = path.join(baseLocation, 'actions', 'temp');
 }
+function GetSha1Internal(path, start) {
+    var html = sync_request_1.default("GET", path).body;
+    var dom = new jsdom.JSDOM(html);
+    var div0 = dom.window.document.getElementsByClassName("faq").item(0);
+    var div1 = div0.children.item(1);
+    var p0 = div1.children.item(0);
+    var a0 = p0.children.item(0);
+    var href = a0.href;
+    return href.substr(start, 12);
+}
 function GetSha1Final(major, minor, patch) {
     var path = "https://unity3d.com/unity/whats-new/" + major.toString() + "." + minor.toString() + "." + patch.toString();
-    core.warning("path\n" + path);
-    var html = sync_request_1.default("GET", path).body;
-    //core.info(html.toString());
-    //core.warning("html\n" + html.toString());
-    var dom = new jsdom.JSDOM(html);
-    //core.warning("faq count\n" + dom.window.document.getElementsByClassName("faq").length);
-    var div0 = dom.window.document.getElementsByClassName("faq").item(0);
-    //core.warning("div0\n" + div0.innerHTML);
-    var div1 = div0.children.item(1);
-    core.warning(div0.tagName + ", " + div0.childElementCount);
-    core.warning(div1.tagName + " " + div1.childElementCount);
-    var p0 = div1.children.item(0);
-    core.warning(p0.tagName);
-    var a0 = p0.children.item(0);
-    var href = a0.href;
-    return href.substr(44, 12);
+    return GetSha1Internal(path, 44);
 }
 function GetSha1Alpha(version) {
-    var html = sync_request_1.default("GET", "https://unity3d.com/unity/alpha/" + version).body;
-    var dom = new jsdom.JSDOM(html);
-    var div0 = dom.window.document.getElementsByClassName("faq").item(0);
-    var div1 = div0.children.item(1);
-    var p0 = div1.children.item(0);
-    var a0 = p0.children.item(0);
-    var href = a0.href;
-    return href.substr(34, 12);
+    var path = "https://unity3d.com/unity/alpha/" + version;
+    return GetSha1Internal(path, 34);
 }
 function GetSha1Beta(version) {
-    var html = sync_request_1.default("GET", "https://unity3d.com/unity/beta/" + version).body;
-    var dom = new jsdom.JSDOM(html);
-    var div0 = dom.window.document.getElementsByClassName("faq").item(0);
-    var div1 = div0.children.item(1);
-    var p0 = div1.children.item(0);
-    var a0 = p0.children.item(0);
-    var href = a0.href;
-    return href.substr(34, 12);
+    var path = "https://unity3d.com/unity/beta/" + version;
+    return GetSha1Internal(path, 34);
 }
 function GetSha1(version) {
     var splitVersion = version.split('.');

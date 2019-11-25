@@ -24,46 +24,30 @@ if (!tempDirectory) {
     tempDirectory = path.join(baseLocation, 'actions', 'temp');
 }
 
-function GetSha1Final(major: number, minor: number, patch: number): string {
-    const path = "https://unity3d.com/unity/whats-new/" + major.toString() + "." + minor.toString() + "." + patch.toString();
-    core.warning("path\n" + path);
+function GetSha1Internal(path: string, start: number) {
     const html = request("GET", path).body;
-    //core.info(html.toString());
-    //core.warning("html\n" + html.toString());
     const dom = new jsdom.JSDOM(html);
-    //core.warning("faq count\n" + dom.window.document.getElementsByClassName("faq").length);
     const div0 = dom.window.document.getElementsByClassName("faq").item(0) as HTMLDivElement;
-    //core.warning("div0\n" + div0.innerHTML);
     const div1 = div0.children.item(1) as HTMLDivElement;
-    core.warning(div0.tagName + ", " + div0.childElementCount);
-    core.warning(div1.tagName + " " + div1.childElementCount);
     const p0 = div1.children.item(0) as HTMLParagraphElement;
-    core.warning(p0.tagName);
     const a0 = p0.children.item(0) as HTMLAnchorElement;
     const href:String = a0.href;
-    return href.substr(44, 12);
+    return href.substr(start, 12);
+}
+
+function GetSha1Final(major: number, minor: number, patch: number): string {
+    const path = "https://unity3d.com/unity/whats-new/" + major.toString() + "." + minor.toString() + "." + patch.toString();
+    return GetSha1Internal(path, 44);
 }
 
 function GetSha1Alpha(version: string): string {
-    const html = request("GET", "https://unity3d.com/unity/alpha/" + version).body;
-    const dom = new jsdom.JSDOM(html);
-    const div0 = dom.window.document.getElementsByClassName("faq").item(0) as HTMLDivElement;
-    const div1 = div0.children.item(1) as HTMLDivElement;
-    const p0 = div1.children.item(0) as HTMLParagraphElement;
-    const a0 = p0.children.item(0) as HTMLAnchorElement;
-    const href:String = a0.href;
-    return href.substr(34, 12);
+    const path = "https://unity3d.com/unity/alpha/" + version;
+    return GetSha1Internal(path, 34);
 }
 
 function GetSha1Beta(version: string): string {
-    const html = request("GET", "https://unity3d.com/unity/beta/" + version).body;
-    const dom = new jsdom.JSDOM(html);
-    const div0 = dom.window.document.getElementsByClassName("faq").item(0) as HTMLDivElement;
-    const div1 = div0.children.item(1) as HTMLDivElement;
-    const p0 = div1.children.item(0) as HTMLParagraphElement;
-    const a0 = p0.children.item(0) as HTMLAnchorElement;
-    const href:String = a0.href;
-    return href.substr(34, 12);
+    const path = "https://unity3d.com/unity/beta/" + version;
+    return GetSha1Internal(path, 34);
 }
 
 function GetSha1(version: string): string {
