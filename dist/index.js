@@ -42,7 +42,7 @@ function GetSha1Final(major, minor, patch) {
     var dom = new jsdom.JSDOM(html);
     core.warning("faq count\n" + dom.window.document.getElementsByClassName("faq").length);
     var div0 = dom.window.document.getElementsByClassName("faq").item(0);
-    core.warning("div0\n" + div0.innerHTML);
+    //core.warning("div0\n" + div0.innerHTML);
     var p0 = div0.getElementsByClassName("info").item(0);
     core.warning("p0\n" + p0.innerHTML);
     var a0 = p0.children.item(0);
