@@ -5,7 +5,7 @@ import * as path from 'path';
 import * as jsdom from "jsdom";
 import { default as request } from 'sync-request';
 import * as fs from 'fs';
-import { execSync } from 'child_process';
+import * as exec from '@actions/exec';
 
 const IS_WINDOWS = process.platform === 'win32';
 
@@ -90,27 +90,27 @@ function GetDownloadUrl(sha1: string): string {
     }
 }
 
-function ExecuteSetUp() {
+async function ExecuteSetUp() {
     switch (process.platform) {
         case "win32":
-            execSync('UnitySetup64.exe /S /D="C:\Program Files\Unity"');
+            await exec.exec('UnitySetup64.exe /S /D="C:\Program Files\Unity"');
             break;
         case "darwin":
-            execSync("sudo installer -package Unity.pkg -target /");
+            await exec.exec("sudo installer -package Unity.pkg -target /");
             break;
         default:
-            execSync('sudo chmod +x UnitySetUp');
-            execSync('echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity')
+            await exec.exec('sudo chmod +x UnitySetUp');
+            await exec.exec('echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity');
             break;
     }
 }
 
-function Run() {
+async function Run() {
     const version = core.getInput("unity-version", { required: true });
     const sha1 = GetSha1(version);
     const download_url = GetDownloadUrl(sha1);
     fs.writeFileSync(GetSetUpName(), request("GET", download_url).body);
-    ExecuteSetUp();
+    await ExecuteSetUp();
 }
 
 Run();
