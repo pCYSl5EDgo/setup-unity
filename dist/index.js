@@ -36,6 +36,7 @@ if (!tempDirectory) {
 }
 function GetSha1Final(major, minor, patch) {
     var html = sync_request_1.default("GET", "https://unity3d.com/unity/whats-new/" + major.toString() + "." + minor.toString() + "." + patch.toString()).body;
+    core.debug("html\n" + html.toString());
     var dom = new jsdom.JSDOM(html);
     var div0 = dom.window.document.getElementsByClassName("faq").item(0);
     var p0 = div0.getElementsByClassName("info").item(0);
