@@ -25,7 +25,9 @@ if (!tempDirectory) {
 }
 
 function GetSha1Final(major: number, minor: number, patch: number): string {
-    const html = request("GET", "https://unity3d.com/unity/whats-new/" + major.toString() + "." + minor.toString() + "." + patch.toString()).body;
+    const path = "https://unity3d.com/unity/whats-new/" + major.toString() + "." + minor.toString() + "." + patch.toString();
+    core.warning("path\n" + path);
+    const html = request("GET", path).body;
     core.warning("html\n" + html.toString());
     const dom = new jsdom.JSDOM(html);
     const div0 = dom.window.document.getElementsByClassName("faq").item(0) as HTMLDivElement;
