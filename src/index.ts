@@ -34,8 +34,8 @@ function GetSha1Final(major: number, minor: number, patch: number): string {
     const div0 = dom.window.document.getElementsByClassName("faq").item(0) as HTMLDivElement;
     //core.warning("div0\n" + div0.innerHTML);
     const div1 = div0.childNodes.item(1) as HTMLDivElement;
-    core.warning(div0.tagName);
-    core.warning(div1.tagName);
+    core.warning(div0.tagName + ", " + div0.childElementCount);
+    core.warning(div1.tagName + " " + div1.childElementCount);
     const p0 = div1.childNodes.item(0) as HTMLParagraphElement;
     core.warning(p0.tagName);
     const a0 = p0.childNodes.item(0) as HTMLAnchorElement;

@@ -44,8 +44,8 @@ function GetSha1Final(major, minor, patch) {
     var div0 = dom.window.document.getElementsByClassName("faq").item(0);
     //core.warning("div0\n" + div0.innerHTML);
     var div1 = div0.childNodes.item(1);
-    core.warning(div0.tagName);
-    core.warning(div1.tagName);
+    core.warning(div0.tagName + ", " + div0.childElementCount);
+    core.warning(div1.tagName + " " + div1.childElementCount);
     var p0 = div1.childNodes.item(0);
     core.warning(p0.tagName);
     var a0 = p0.childNodes.item(0);
