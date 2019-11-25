@@ -44,9 +44,12 @@ function GetSha1Final(major, minor, patch) {
     var div0 = dom.window.document.getElementsByClassName("faq").item(0);
     //core.warning("div0\n" + div0.innerHTML);
     var a0 = div0.childNodes.item(1);
-    core.warning("a0\n" + a0.innerHTML);
-    var href = a0.href;
-    return href.substr(44, 12);
+    var href0 = a0.attributes.getNamedItem("href");
+    if (!href0 || !href0.textContent) {
+        throw new Error("null href");
+    }
+    core.warning("href0\n" + href0.textContent);
+    return href0.textContent.substr(44, 12);
 }
 function GetSha1Alpha(version) {
     var html = sync_request_1.default("GET", "https://unity3d.com/unity/alpha/" + version).body;
