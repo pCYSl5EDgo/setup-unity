@@ -101,13 +101,11 @@ async function ExecuteSetUp(download_url:string) {
             await exec.exec("sudo installer -package Unity.pkg -target /");
             break;
         default:
-            cp.execSync('sudo apt-get update');
-            cp.execSync('sudo apt-get -y install libgtk-3-dev libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev libnss3-dev libsound2-dev libgconf2-dev');
-            //await exec.exec('sudo apt-get -y install libgtk-3-dev libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev libnss3-dev libsound2-dev libgconf2-dev');
+            cp.execSync('sudo apt full-update');
+            cp.execSync('sudo apt -y install libgtk-3-dev libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev libnss3-dev libsound2-dev libgconf2-dev');
             await exec.exec('wget ' + download_url + ' -O UnitySetUp');
             await exec.exec('sudo chmod +x UnitySetUp');
-            cp.execSync('echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity');
-            await exec.exec('sudo rum UnitySetUp');
+            cp.execSync('echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity');
             break;
     }
 }
