@@ -158,12 +158,12 @@ function ExecuteSetUp(download_url) {
                 case 6:
                     _b.sent();
                     return [3 /*break*/, 11];
-                case 7: 
-                //await exec.exec('sudo apt-get update');
-                //await exec.exec('sudo apt-get -y install libgtk-3-dev libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev libnss3-dev libsound2-dev libgconf2-dev');
-                return [4 /*yield*/, exec.exec('wget ' + download_url + ' -O UnitySetUp')];
+                case 7:
+                    cp.execSync('sudo apt-get update');
+                    cp.execSync('sudo apt-get -y install libgtk-3-dev libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev libnss3-dev libsound2-dev libgconf2-dev');
+                    //await exec.exec('sudo apt-get -y install libgtk-3-dev libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev libnss3-dev libsound2-dev libgconf2-dev');
+                    return [4 /*yield*/, exec.exec('wget ' + download_url + ' -O UnitySetUp')];
                 case 8:
-                    //await exec.exec('sudo apt-get update');
                     //await exec.exec('sudo apt-get -y install libgtk-3-dev libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev libnss3-dev libsound2-dev libgconf2-dev');
                     _b.sent();
                     return [4 /*yield*/, exec.exec('sudo chmod +x UnitySetUp')];
