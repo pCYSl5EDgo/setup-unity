@@ -99,7 +99,8 @@ function ExecuteSetUp() {
             execSync("sudo installer -package Unity.pkg -target /");
             break;
         default:
-            execSync('sudo chmod +x UnitySetUp && echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity && sudo rm UnitySetUp && sudo rm -rf /tmp/unity && sudo rm -rf /root/.local/share/Trash/*');
+            execSync('sudo chmod +x UnitySetUp');
+            execSync('echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity')
             break;
     }
 }
