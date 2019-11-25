@@ -159,9 +159,8 @@ function ExecuteSetUp(download_url) {
                     _b.sent();
                     return [3 /*break*/, 10];
                 case 7:
-                    cp.execSync('sudo apt-get update'
-                        + ' && ' +
-                        'sudo apt-get upgrade');
+                    cp.execSync('sudo apt-get update');
+                    cp.execSync('sudo apt-get upgrade');
                     cp.execSync('sudo apt-get -y install gconf-service');
                     cp.execSync('sudo apt-get -y install lib32gcc1');
                     cp.execSync('sudo apt-get -y install lib32stdc++6');

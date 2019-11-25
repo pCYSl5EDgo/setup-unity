@@ -31,7 +31,7 @@ function GetSha1Internal(path: string, start: number) {
     const div1 = div0.children.item(1) as HTMLDivElement;
     const p0 = div1.children.item(0) as HTMLParagraphElement;
     const a0 = p0.children.item(0) as HTMLAnchorElement;
-    const href:String = a0.href;
+    const href: String = a0.href;
     return href.substr(start, 12);
 }
 
@@ -55,7 +55,7 @@ function GetSha1(version: string): string {
     const majorVersionStr = splitVersion[0];
     const majorVersionNum = Number.parseInt(majorVersionStr);
     if (majorVersionNum < 2017) throw new Error(majorVersionStr + " should not be less than 2017");
-    const patchVersionStr:String = splitVersion[2];
+    const patchVersionStr: String = splitVersion[2];
 
     const indexOfAlpha = patchVersionStr.indexOf("a");
     if (indexOfAlpha !== -1) return GetSha1Alpha(version);
@@ -90,7 +90,7 @@ function GetDownloadUrl(sha1: string): string {
     }
 }
 
-async function ExecuteSetUp(download_url:string) {
+async function ExecuteSetUp(download_url: string) {
     switch (process.platform) {
         case "win32":
             await exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile UnitySetup64.exe');
@@ -101,9 +101,8 @@ async function ExecuteSetUp(download_url:string) {
             await exec.exec("sudo installer -package Unity.pkg -target /");
             break;
         default:
-            cp.execSync('sudo apt-get update'
-            + ' && ' + 
-            'sudo apt-get upgrade');
+            cp.execSync('sudo apt-get update');
+            cp.execSync('sudo apt-get upgrade');
             cp.execSync('sudo apt-get -y install gconf-service');
             cp.execSync('sudo apt-get -y install lib32gcc1');
             cp.execSync('sudo apt-get -y install lib32stdc++6');
