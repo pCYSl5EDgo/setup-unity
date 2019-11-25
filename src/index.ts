@@ -93,14 +93,14 @@ function GetDownloadUrl(sha1: string): string {
 async function ExecuteSetUp(download_url: string, version: string, install_directory: string) {
     switch (process.platform) {
         case "win32":
-            cp.execSync('Invoke-WebRequest -Uri ' + download_url + ' -OutFile UnitySetup64.exe');
+            await exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile UnitySetup64.exe');
             if (install_directory) {
-                cp.execSync('UnitySetup64.exe /S /D="' + install_directory + '"');
+                await exec.exec('UnitySetup64.exe /S /D="' + install_directory + '"');
             }
             else {
-                cp.execSync('UnitySetup64.exe /S /D="C:\Program Files\Unity"');
+                await exec.exec('UnitySetup64.exe /S /D="C:\Program Files\Unity"');
             }
-            cp.execSync('Remove-Item -Path UnitySetup64.exe')
+            await exec.exec('Remove-Item -Path UnitySetup64.exe')
             break;
         case "darwin":
             await exec.exec('curl -OL ' + download_url)
