@@ -43,7 +43,7 @@ function GetSha1Final(major, minor, patch) {
     core.warning("faq count\n" + dom.window.document.getElementsByClassName("faq").length);
     var div0 = dom.window.document.getElementsByClassName("faq").item(0);
     //core.warning("div0\n" + div0.innerHTML);
-    var p0 = div0.getElementsByClassName("info").item(0);
+    var p0 = div0.childNodes.item(1);
     core.warning("p0\n" + p0.innerHTML);
     var a0 = p0.childNodes.item(0);
     core.warning("a0\n" + a0.innerHTML);
@@ -54,8 +54,8 @@ function GetSha1Alpha(version) {
     var html = sync_request_1.default("GET", "https://unity3d.com/unity/alpha/" + version).body;
     var dom = new jsdom.JSDOM(html);
     var div0 = dom.window.document.getElementsByClassName("faq").item(0);
-    var p0 = div0.getElementsByClassName("info").item(0);
-    var a0 = p0.children.item(0);
+    var p0 = div0.childNodes.item(1);
+    var a0 = p0.childNodes.item(0);
     var href = a0.href;
     return href.substr(34, 12);
 }
@@ -63,7 +63,7 @@ function GetSha1Beta(version) {
     var html = sync_request_1.default("GET", "https://unity3d.com/unity/beta/" + version).body;
     var dom = new jsdom.JSDOM(html);
     var div0 = dom.window.document.getElementsByClassName("faq").item(0);
-    var p0 = div0.getElementsByClassName("info").item(0);
+    var p0 = div0.childNodes.item(1);
     var a0 = p0.children.item(0);
     var href = a0.href;
     return href.substr(34, 12);
