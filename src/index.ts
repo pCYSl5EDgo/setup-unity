@@ -108,7 +108,7 @@ function Run() {
     const version = core.getInput("unity-version", { required: true });
     const sha1 = GetSha1(version);
     const download_url = GetDownloadUrl(sha1);
-    fs.writeFileSync(GetSetUpName(), request("GET", download_url))
+    fs.writeFileSync(GetSetUpName(), request("GET", download_url).body);
     ExecuteSetUp();
 }
 
