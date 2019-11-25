@@ -30,6 +30,7 @@ function GetSha1Final(major: number, minor: number, patch: number): string {
     const html = request("GET", path).body;
     core.warning("html\n" + html.toString());
     const dom = new jsdom.JSDOM(html);
+    core.warning("faq count\n" + dom.window.document.getElementsByClassName("faq").length);
     const div0 = dom.window.document.getElementsByClassName("faq").item(0) as HTMLDivElement;
     core.warning("div0\n" + div0.innerHTML);
     const p0 = div0.getElementsByClassName("info").item(0) as HTMLParagraphElement;

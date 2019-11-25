@@ -40,6 +40,7 @@ function GetSha1Final(major, minor, patch) {
     var html = sync_request_1.default("GET", path).body;
     core.warning("html\n" + html.toString());
     var dom = new jsdom.JSDOM(html);
+    core.warning("faq count\n" + dom.window.document.getElementsByClassName("faq").length);
     var div0 = dom.window.document.getElementsByClassName("faq").item(0);
     core.warning("div0\n" + div0.innerHTML);
     var p0 = div0.getElementsByClassName("info").item(0);
