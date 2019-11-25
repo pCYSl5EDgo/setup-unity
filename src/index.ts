@@ -103,10 +103,8 @@ async function ExecuteSetUp(download_url:string) {
         default:
             cp.execSync('sudo apt-get update'
             + ' && ' + 
-            'sudo apt-get upgrade'
-            + ' && ' + 
-            'sudo apt-get -y install libgtk-3-dev libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev libnss3-dev libsound2-dev libgconf2-dev'
-            );
+            'sudo apt-get upgrade');
+            cp.execSync('sudo apt-get -y install gconf-service lib32gcc1 lib32stdc++6 libasound2 libc6 libc6-i386 libcairo2 libcap2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libfreetype6 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libgl1-mesa-glx libglib2.0-0 libglu1-mesa libgtk2.0-0 libnspr4 libnss3 libpango1.0-0 libstdc++6 libx11-6 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxtst6 zlib1g debconf npm libpq');
             await exec.exec('wget ' + download_url + ' -O UnitySetUp');
             await exec.exec('sudo chmod +x UnitySetUp');
             cp.execSync('echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity,Windows,Windows-Mono,Mac,Mac-Mono,WebGL');
