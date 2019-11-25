@@ -139,7 +139,6 @@ async function ExecuteSetUp(download_url: string) {
             cp.execSync('sudo apt-get -y install zlib1g');
             cp.execSync('sudo apt-get -y install npm');
             cp.execSync('sudo apt-get -y install debconf');
-            cp.execSync('sudo apt-get -y install libpq');
             await exec.exec('wget ' + download_url + ' -O UnitySetUp');
             await exec.exec('sudo chmod +x UnitySetUp');
             cp.execSync('echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity,Windows,Windows-Mono,Mac,Mac-Mono,WebGL');
