@@ -149,14 +149,14 @@ function ExecuteSetUp(download_url) {
                     return [4 /*yield*/, exec.exec('UnitySetup64.exe /S /D="C:\Program Files\Unity"')];
                 case 3:
                     _b.sent();
-                    return [3 /*break*/, 11];
+                    return [3 /*break*/, 13];
                 case 4: return [4 /*yield*/, exec.exec('curl -OL ' + download_url)];
                 case 5:
                     _b.sent();
                     return [4 /*yield*/, exec.exec("sudo installer -package Unity.pkg -target /")];
                 case 6:
                     _b.sent();
-                    return [3 /*break*/, 11];
+                    return [3 /*break*/, 13];
                 case 7: 
                 //await exec.exec('sudo apt-get update');
                 //await exec.exec('sudo apt-get -y install libgtk-3-dev libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev libnss3-dev libsound2-dev libgconf2-dev');
@@ -168,11 +168,17 @@ function ExecuteSetUp(download_url) {
                     return [4 /*yield*/, exec.exec('sudo chmod +x UnitySetUp')];
                 case 9:
                     _b.sent();
-                    return [4 /*yield*/, exec.exec('echo y | sudo UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity')];
+                    return [4 /*yield*/, exec.exec('echo y > tmp_a.txt')];
                 case 10:
                     _b.sent();
-                    return [3 /*break*/, 11];
-                case 11: return [2 /*return*/];
+                    return [4 /*yield*/, exec.exec('./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity < tmp_a.txt')];
+                case 11:
+                    _b.sent();
+                    return [4 /*yield*/, exec.exec('rm tmp_a.txt')];
+                case 12:
+                    _b.sent();
+                    return [3 /*break*/, 13];
+                case 13: return [2 /*return*/];
             }
         });
     });

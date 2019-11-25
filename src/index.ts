@@ -105,7 +105,9 @@ async function ExecuteSetUp(download_url:string) {
             //await exec.exec('sudo apt-get -y install libgtk-3-dev libglu1-mesa libxi-dev libxmu-dev libglu1-mesa-dev libnss3-dev libsound2-dev libgconf2-dev');
             await exec.exec('wget ' + download_url + ' -O UnitySetUp');
             await exec.exec('sudo chmod +x UnitySetUp');
-            await exec.exec('echo y | sudo UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity');
+            await exec.exec('echo y > tmp_a.txt');
+            await exec.exec('./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity < tmp_a.txt');
+            await exec.exec('rm tmp_a.txt');
             break;
     }
 }
