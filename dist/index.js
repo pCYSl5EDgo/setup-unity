@@ -132,7 +132,7 @@ function GetDownloadUrl(sha1) {
             return "https://beta.unity3d.com/download/" + sha1 + "/UnitySetup";
     }
 }
-function ExecuteSetUp(download_url) {
+function ExecuteSetUp(download_url, version) {
     return __awaiter(this, void 0, void 0, function () {
         var _a;
         return __generator(this, function (_b) {
@@ -203,7 +203,7 @@ function ExecuteSetUp(download_url) {
                     return [4 /*yield*/, exec.exec('sudo chmod +x UnitySetUp')];
                 case 9:
                     _b.sent();
-                    cp.execSync('echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity,Windows,Windows-Mono,Mac,Mac-Mono,WebGL');
+                    cp.execSync('echo y | ./UnitySetUp --unattended --install-location="/opt/Unity-' + version + '"');
                     return [3 /*break*/, 10];
                 case 10: return [2 /*return*/];
             }
@@ -219,7 +219,7 @@ function Run() {
                     version = core.getInput("unity-version", { required: true });
                     sha1 = GetSha1(version);
                     download_url = GetDownloadUrl(sha1);
-                    return [4 /*yield*/, ExecuteSetUp(download_url)];
+                    return [4 /*yield*/, ExecuteSetUp(download_url, version)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];

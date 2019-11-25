@@ -90,7 +90,7 @@ function GetDownloadUrl(sha1: string): string {
     }
 }
 
-async function ExecuteSetUp(download_url: string) {
+async function ExecuteSetUp(download_url: string, version: string) {
     switch (process.platform) {
         case "win32":
             await exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile UnitySetup64.exe');
@@ -141,7 +141,7 @@ async function ExecuteSetUp(download_url: string) {
             cp.execSync('sudo apt-get -y install debconf');
             await exec.exec('wget ' + download_url + ' -O UnitySetUp');
             await exec.exec('sudo chmod +x UnitySetUp');
-            cp.execSync('echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity,Windows,Windows-Mono,Mac,Mac-Mono,WebGL');
+            cp.execSync('echo y | ./UnitySetUp --unattended --install-location="/opt/Unity-' + version + '"');
             break;
     }
 }
@@ -150,7 +150,7 @@ async function Run() {
     const version = core.getInput("unity-version", { required: true });
     const sha1 = GetSha1(version);
     const download_url = GetDownloadUrl(sha1);
-    await ExecuteSetUp(download_url);
+    await ExecuteSetUp(download_url, version);
 }
 
 Run();
