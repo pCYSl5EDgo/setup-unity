@@ -44,7 +44,7 @@ function GetSha1Final(major, minor, patch) {
     var div0 = dom.window.document.getElementsByClassName("faq").item(0);
     //core.warning("div0\n" + div0.innerHTML);
     var a0 = div0.childNodes.item(1);
-    core.debug(a0.tagName);
+    core.warning(a0.tagName);
     var href0 = a0.attributes.getNamedItem("href");
     if (!href0 || !href0.textContent) {
         throw new Error("null href");
