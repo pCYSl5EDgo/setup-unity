@@ -5,6 +5,9 @@ inputs:
   unity-version:
     description: 'Unity version'
     required: true
+  install-directory:
+    description: 'Install Directory. Must ends with separator / or \.'
+    required: false
 runs:
   using: 'node12'
   main: 'dist/index.js'
