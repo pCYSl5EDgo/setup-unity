@@ -65,7 +65,7 @@ function GetSha1Beta(version) {
     var div0 = dom.window.document.getElementsByClassName("faq").item(0);
     var div1 = div0.childNodes.item(1);
     var p0 = div1.childNodes.item(0);
-    var a0 = p0.children.item(0);
+    var a0 = p0.childNodes.item(0);
     var href = a0.href;
     return href.substr(34, 12);
 }
