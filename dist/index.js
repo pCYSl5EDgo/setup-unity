@@ -38,7 +38,7 @@ function GetSha1Final(major, minor, patch) {
     var path = "https://unity3d.com/unity/whats-new/" + major.toString() + "." + minor.toString() + "." + patch.toString();
     core.warning("path\n" + path);
     var html = sync_request_1.default("GET", path).body;
-    core.info(html.toString());
+    //core.info(html.toString());
     //core.warning("html\n" + html.toString());
     var dom = new jsdom.JSDOM(html);
     //core.warning("faq count\n" + dom.window.document.getElementsByClassName("faq").length);
