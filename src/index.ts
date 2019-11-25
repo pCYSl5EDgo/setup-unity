@@ -90,15 +90,24 @@ function GetDownloadUrl(sha1: string): string {
     }
 }
 
-async function ExecuteSetUp(download_url: string, version: string) {
+async function ExecuteSetUp(download_url: string, version: string, install_directory: string) {
     switch (process.platform) {
         case "win32":
-            await exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile UnitySetup64.exe');
-            await exec.exec('UnitySetup64.exe /S /D="C:\Program Files\Unity"');
+            cp.execSync('Invoke-WebRequest -Uri ' + download_url + ' -OutFile UnitySetup64.exe');
+            if (install_directory) {
+                cp.execSync('UnitySetup64.exe /S /D="' + install_directory + '"');
+            }
+            else {
+                cp.execSync('UnitySetup64.exe /S /D="C:\Program Files\Unity"');
+            }
+            cp.execSync('Remove-Item -Path UnitySetup64.exe')
             break;
         case "darwin":
             await exec.exec('curl -OL ' + download_url)
             await exec.exec("sudo installer -package Unity.pkg -target /");
+            if (install_directory) {
+                await exec.exec('sudo mv -T /Applications/Unity/ "' + install_directory + '"');
+            }
             break;
         default:
             cp.execSync('sudo apt-get update');
@@ -142,7 +151,12 @@ async function ExecuteSetUp(download_url: string, version: string) {
             await exec.exec('wget ' + download_url + ' -O UnitySetUp');
             await exec.exec('sudo chmod +x UnitySetUp');
             cp.execSync('echo y | ./UnitySetUp --unattended --install-location="/opt/Unity-' + version + '"');
-            cp.execSync('cd /opt/ && mv Unity-' + version + '/ Unity/');
+            if (install_directory) {
+                cp.execSync('mv /opt/Unity-' + version + '/ ' + install_directory);
+            }
+            else {
+                cp.execSync('mv /opt/Unity-' + version + '/ /opt/Unity/');
+            }
             await exec.exec('sudo rm -f UnitySetUp');
             break;
     }
@@ -152,7 +166,8 @@ async function Run() {
     const version = core.getInput("unity-version", { required: true });
     const sha1 = GetSha1(version);
     const download_url = GetDownloadUrl(sha1);
-    await ExecuteSetUp(download_url, version);
+    const install_directory = core.getInput("install-directory", { required: false });
+    await ExecuteSetUp(download_url, version, install_directory);
 }
 
 Run();

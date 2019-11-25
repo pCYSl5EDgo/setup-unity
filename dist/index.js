@@ -132,7 +132,7 @@ function GetDownloadUrl(sha1) {
             return "https://beta.unity3d.com/download/" + sha1 + "/UnitySetup";
     }
 }
-function ExecuteSetUp(download_url, version) {
+function ExecuteSetUp(download_url, version, install_directory) {
     return __awaiter(this, void 0, void 0, function () {
         var _a;
         return __generator(this, function (_b) {
@@ -141,23 +141,31 @@ function ExecuteSetUp(download_url, version) {
                     _a = process.platform;
                     switch (_a) {
                         case "win32": return [3 /*break*/, 1];
-                        case "darwin": return [3 /*break*/, 4];
+                        case "darwin": return [3 /*break*/, 2];
                     }
                     return [3 /*break*/, 7];
-                case 1: return [4 /*yield*/, exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile UnitySetup64.exe')];
-                case 2:
-                    _b.sent();
-                    return [4 /*yield*/, exec.exec('UnitySetup64.exe /S /D="C:\Program Files\Unity"')];
+                case 1:
+                    cp.execSync('Invoke-WebRequest -Uri ' + download_url + ' -OutFile UnitySetup64.exe');
+                    if (install_directory) {
+                        cp.execSync('UnitySetup64.exe /S /D="' + install_directory + '"');
+                    }
+                    else {
+                        cp.execSync('UnitySetup64.exe /S /D="C:\Program Files\Unity"');
+                    }
+                    cp.execSync('Remove-Item -Path UnitySetup64.exe');
+                    return [3 /*break*/, 11];
+                case 2: return [4 /*yield*/, exec.exec('curl -OL ' + download_url)];
                 case 3:
                     _b.sent();
-                    return [3 /*break*/, 11];
-                case 4: return [4 /*yield*/, exec.exec('curl -OL ' + download_url)];
+                    return [4 /*yield*/, exec.exec("sudo installer -package Unity.pkg -target /")];
+                case 4:
+                    _b.sent();
+                    if (!install_directory) return [3 /*break*/, 6];
+                    return [4 /*yield*/, exec.exec('sudo mv -T /Applications/Unity/ "' + install_directory + '"')];
                 case 5:
                     _b.sent();
-                    return [4 /*yield*/, exec.exec("sudo installer -package Unity.pkg -target /")];
-                case 6:
-                    _b.sent();
-                    return [3 /*break*/, 11];
+                    _b.label = 6;
+                case 6: return [3 /*break*/, 11];
                 case 7:
                     cp.execSync('sudo apt-get update');
                     cp.execSync('sudo apt-get -y install gconf-service');
@@ -204,7 +212,12 @@ function ExecuteSetUp(download_url, version) {
                 case 9:
                     _b.sent();
                     cp.execSync('echo y | ./UnitySetUp --unattended --install-location="/opt/Unity-' + version + '"');
-                    cp.execSync('cd /opt/ && mv Unity-' + version + '/ Unity/');
+                    if (install_directory) {
+                        cp.execSync('mv /opt/Unity-' + version + '/ ' + install_directory);
+                    }
+                    else {
+                        cp.execSync('mv /opt/Unity-' + version + '/ /opt/Unity/');
+                    }
                     return [4 /*yield*/, exec.exec('sudo rm -f UnitySetUp')];
                 case 10:
                     _b.sent();
@@ -216,14 +229,15 @@ function ExecuteSetUp(download_url, version) {
 }
 function Run() {
     return __awaiter(this, void 0, void 0, function () {
-        var version, sha1, download_url;
+        var version, sha1, download_url, install_directory;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     version = core.getInput("unity-version", { required: true });
                     sha1 = GetSha1(version);
                     download_url = GetDownloadUrl(sha1);
-                    return [4 /*yield*/, ExecuteSetUp(download_url, version)];
+                    install_directory = core.getInput("install-directory", { required: false });
+                    return [4 /*yield*/, ExecuteSetUp(download_url, version, install_directory)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];
