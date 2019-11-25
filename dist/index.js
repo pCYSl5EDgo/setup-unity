@@ -163,7 +163,7 @@ function ExecuteSetUp(download_url) {
                     return [4 /*yield*/, exec.exec('sudo chmod +x UnitySetUp')];
                 case 9:
                     _b.sent();
-                    return [4 /*yield*/, exec.exec('echo y | ./UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity')];
+                    return [4 /*yield*/, exec.exec('echo y | sudo UnitySetUp --unattended --install-location=/opt/Unity --verbose --download-location=/tmp/unity --components=Unity')];
                 case 10:
                     _b.sent();
                     return [3 /*break*/, 11];
