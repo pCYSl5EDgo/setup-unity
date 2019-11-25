@@ -33,15 +33,11 @@ function GetSha1Final(major: number, minor: number, patch: number): string {
     core.warning("faq count\n" + dom.window.document.getElementsByClassName("faq").length);
     const div0 = dom.window.document.getElementsByClassName("faq").item(0) as HTMLDivElement;
     //core.warning("div0\n" + div0.innerHTML);
-    const a0 = div0.childNodes.item(1) as HTMLAnchorElement;
-    core.warning(a0.tagName);
-    const href0 = a0.attributes.getNamedItem("href");
-    if(!href0 || !href0.textContent)
-    {
-        throw new Error("null href");
-    }
-    core.warning("href0\n" + href0.textContent);
-    return href0.textContent.substr(44, 12);
+    const div1 = div0.childNodes.item(1) as HTMLDivElement;
+    const p0 = div1.childNodes.item(0) as HTMLParagraphElement;
+    const a0 = p0.childNodes.item(0) as HTMLAnchorElement;
+    const href:String = a0.href;
+    return href.substr(44, 12);
 }
 
 function GetSha1Alpha(version: string): string {
