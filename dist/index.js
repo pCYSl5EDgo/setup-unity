@@ -141,25 +141,21 @@ function ExecuteSetUp(download_url, version) {
                     _a = process.platform;
                     switch (_a) {
                         case "win32": return [3 /*break*/, 1];
-                        case "darwin": return [3 /*break*/, 4];
+                        case "darwin": return [3 /*break*/, 2];
                     }
-                    return [3 /*break*/, 7];
-                case 1: return [4 /*yield*/, exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile UnitySetup64.exe')];
-                case 2:
-                    _b.sent();
-                    return [4 /*yield*/, exec.exec('UnitySetup64.exe /S /D="C:\Program Files\Unity"')];
+                    return [3 /*break*/, 5];
+                case 1:
+                    cp.execSync('bitsadmin /TRANSFER bj /download /priority normal ' + download_url + ' %CD%\UnitySetup64.exe');
+                    cp.execSync('UnitySetup64.exe /UI=reduced /S /D=C:\Program Files\Unity');
+                    return [3 /*break*/, 9];
+                case 2: return [4 /*yield*/, exec.exec('curl -OL ' + download_url)];
                 case 3:
                     _b.sent();
-                    //await exec.exec('Remove-Item -Path UnitySetup64.exe')
-                    return [3 /*break*/, 11];
-                case 4: return [4 /*yield*/, exec.exec('curl -OL ' + download_url)];
-                case 5:
-                    _b.sent();
                     return [4 /*yield*/, exec.exec("sudo installer -package Unity.pkg -target /")];
-                case 6:
+                case 4:
                     _b.sent();
-                    return [3 /*break*/, 11];
-                case 7:
+                    return [3 /*break*/, 9];
+                case 5:
                     cp.execSync('sudo apt-get update');
                     cp.execSync('sudo apt-get -y install gconf-service');
                     cp.execSync('sudo apt-get -y install lib32gcc1');
@@ -199,18 +195,18 @@ function ExecuteSetUp(download_url, version) {
                     cp.execSync('sudo apt-get -y install npm');
                     cp.execSync('sudo apt-get -y install debconf');
                     return [4 /*yield*/, exec.exec('wget ' + download_url + ' -O UnitySetUp')];
-                case 8:
+                case 6:
                     _b.sent();
                     return [4 /*yield*/, exec.exec('sudo chmod +x UnitySetUp')];
-                case 9:
+                case 7:
                     _b.sent();
                     cp.execSync('echo y | ./UnitySetUp --unattended --install-location="/opt/Unity-' + version + '"');
                     cp.execSync('mv /opt/Unity-' + version + '/ /opt/Unity/');
                     return [4 /*yield*/, exec.exec('sudo rm -f UnitySetUp')];
-                case 10:
+                case 8:
                     _b.sent();
-                    return [3 /*break*/, 11];
-                case 11: return [2 /*return*/];
+                    return [3 /*break*/, 9];
+                case 9: return [2 /*return*/];
             }
         });
     });
