@@ -141,27 +141,37 @@ function ExecuteSetUp(download_url, version) {
                     _a = process.platform;
                     switch (_a) {
                         case "win32": return [3 /*break*/, 1];
-                        case "darwin": return [3 /*break*/, 2];
+                        case "darwin": return [3 /*break*/, 3];
                     }
-                    return [3 /*break*/, 5];
-                case 1:
+                    return [3 /*break*/, 6];
+                case 1: 
+                //await exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile ./UnitySetup64.exe');
+                // なんてことだ！
+                // 信じられない！
+                // 上記のInvoke-WebRequestにすると2018.3.7f1をダウンロードしてくるのだ。
+                // Unity2020を要求しているのにも関わらず！
+                // しょうがないからbitsadminする他無い！            
+                //cp.execSync('bitsadmin /TRANSFER bj /download /priority normal ' + download_url + ' %CD%\\UnitySetup64.exe');
+                return [4 /*yield*/, exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile ./UnitySetup64.exe -Headers @{"Cache-Control"="no-cache"}')];
+                case 2:
                     //await exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile ./UnitySetup64.exe');
                     // なんてことだ！
                     // 信じられない！
                     // 上記のInvoke-WebRequestにすると2018.3.7f1をダウンロードしてくるのだ。
                     // Unity2020を要求しているのにも関わらず！
-                    // しょうがないからbitsadminする他無い！
-                    cp.execSync('bitsadmin /TRANSFER bj /download /priority normal ' + download_url + ' %CD%\\UnitySetup64.exe');
-                    cp.execSync('UnitySetup64.exe /UI=reduced /S /D=C:\\Program Files\\Unity');
-                    return [3 /*break*/, 9];
-                case 2: return [4 /*yield*/, exec.exec('curl -OL ' + download_url)];
-                case 3:
+                    // しょうがないからbitsadminする他無い！            
+                    //cp.execSync('bitsadmin /TRANSFER bj /download /priority normal ' + download_url + ' %CD%\\UnitySetup64.exe');
                     _b.sent();
-                    return [4 /*yield*/, exec.exec("sudo installer -package Unity.pkg -target /")];
+                    cp.execSync('UnitySetup64.exe /UI=reduced /S /D=C:\\Program Files\\Unity');
+                    return [3 /*break*/, 10];
+                case 3: return [4 /*yield*/, exec.exec('curl -OL ' + download_url)];
                 case 4:
                     _b.sent();
-                    return [3 /*break*/, 9];
+                    return [4 /*yield*/, exec.exec("sudo installer -package Unity.pkg -target /")];
                 case 5:
+                    _b.sent();
+                    return [3 /*break*/, 10];
+                case 6:
                     cp.execSync('sudo apt-get update');
                     cp.execSync('sudo apt-get -y install gconf-service');
                     cp.execSync('sudo apt-get -y install lib32gcc1');
@@ -201,18 +211,18 @@ function ExecuteSetUp(download_url, version) {
                     cp.execSync('sudo apt-get -y install npm');
                     cp.execSync('sudo apt-get -y install debconf');
                     return [4 /*yield*/, exec.exec('wget ' + download_url + ' -O UnitySetUp')];
-                case 6:
+                case 7:
                     _b.sent();
                     return [4 /*yield*/, exec.exec('sudo chmod +x UnitySetUp')];
-                case 7:
+                case 8:
                     _b.sent();
                     cp.execSync('echo y | ./UnitySetUp --unattended --install-location="/opt/Unity-' + version + '"');
                     cp.execSync('mv /opt/Unity-' + version + '/ /opt/Unity/');
                     return [4 /*yield*/, exec.exec('sudo rm -f UnitySetUp')];
-                case 8:
+                case 9:
                     _b.sent();
-                    return [3 /*break*/, 9];
-                case 9: return [2 /*return*/];
+                    return [3 /*break*/, 10];
+                case 10: return [2 /*return*/];
             }
         });
     });
