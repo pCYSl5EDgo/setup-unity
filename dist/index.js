@@ -147,7 +147,7 @@ function ExecuteSetUp(download_url, version) {
                 case 1: return [4 /*yield*/, exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile UnitySetup64.exe')];
                 case 2:
                     _b.sent();
-                    return [4 /*yield*/, exec.exec('UnitySetup64.exe /S /D="C:\Unity"')];
+                    return [4 /*yield*/, exec.exec('UnitySetup64.exe /S /D="C:\Program Files\Unity"')];
                 case 3:
                     _b.sent();
                     return [4 /*yield*/, exec.exec('Remove-Item -Path UnitySetup64.exe')];
