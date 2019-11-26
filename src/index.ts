@@ -1,28 +1,8 @@
-let tempDirectory = process.env['RUNNER_TEMPDIRECTORY'] || '';
-
 import * as core from '@actions/core';
-import * as path from 'path';
 import * as jsdom from "jsdom";
 import { default as request } from 'sync-request';
 import * as exec from '@actions/exec';
 import * as cp from 'child_process';
-
-const IS_WINDOWS = process.platform === 'win32';
-
-if (!tempDirectory) {
-    let baseLocation;
-    if (IS_WINDOWS) {
-        // On windows use the USERPROFILE env variable
-        baseLocation = process.env['USERPROFILE'] || 'C:\\';
-    } else {
-        if (process.platform === 'darwin') {
-            baseLocation = '/Users';
-        } else {
-            baseLocation = '/home';
-        }
-    }
-    tempDirectory = path.join(baseLocation, 'actions', 'temp');
-}
 
 function GetSha1Internal(path: string, start: number) {
     const html = request("GET", path).body;
@@ -66,17 +46,6 @@ function GetSha1(version: string): string {
     const indexOfFinal = patchVersionStr.indexOf("f");
     if (indexOfFinal === -1) throw new Error("invalid version");
     return GetSha1Final(majorVersionNum, minorVersionNum, Number.parseInt(patchVersionStr.substr(0, indexOfFinal)));
-}
-
-function GetSetUpName() {
-    switch (process.platform) {
-        case "darwin":
-            return "Unity.pkg";
-        case "win32":
-            return "UnitySetup64.exe";
-        default:
-            return "UnitySetUp";
-    }
 }
 
 function GetDownloadUrl(id: string): string {
@@ -166,26 +135,11 @@ async function ExecuteSetUp(download_url: string, version: string) {
     }
 }
 
-function ExecuteWebGL(version: string, id: string) {
-    switch (process.platform) {
-        case "win32":
-
-            break;
-        case "darwin":
-            break;
-        default:
-            break;
-    }
-}
-
 async function Run() {
     const version = core.getInput("unity-version", { required: true });
     const id = GetSha1(version);
     core.setOutput("id", id);
     await ExecuteSetUp(GetDownloadUrl(id), version);
-    // if (core.getInput("support-webgl", { required: false }) === 'true') {
-
-    // }
 }
 
 Run();

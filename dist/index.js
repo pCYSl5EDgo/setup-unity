@@ -46,30 +46,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var tempDirectory = process.env['RUNNER_TEMPDIRECTORY'] || '';
 var core = __importStar(require("@actions/core"));
-var path = __importStar(require("path"));
 var jsdom = __importStar(require("jsdom"));
 var sync_request_1 = __importDefault(require("sync-request"));
 var exec = __importStar(require("@actions/exec"));
 var cp = __importStar(require("child_process"));
-var IS_WINDOWS = process.platform === 'win32';
-if (!tempDirectory) {
-    var baseLocation = void 0;
-    if (IS_WINDOWS) {
-        // On windows use the USERPROFILE env variable
-        baseLocation = process.env['USERPROFILE'] || 'C:\\';
-    }
-    else {
-        if (process.platform === 'darwin') {
-            baseLocation = '/Users';
-        }
-        else {
-            baseLocation = '/home';
-        }
-    }
-    tempDirectory = path.join(baseLocation, 'actions', 'temp');
-}
 function GetSha1Internal(path, start) {
     var html = sync_request_1.default("GET", path).body;
     var dom = new jsdom.JSDOM(html);
@@ -111,16 +92,6 @@ function GetSha1(version) {
     if (indexOfFinal === -1)
         throw new Error("invalid version");
     return GetSha1Final(majorVersionNum, minorVersionNum, Number.parseInt(patchVersionStr.substr(0, indexOfFinal)));
-}
-function GetSetUpName() {
-    switch (process.platform) {
-        case "darwin":
-            return "Unity.pkg";
-        case "win32":
-            return "UnitySetup64.exe";
-        default:
-            return "UnitySetUp";
-    }
 }
 function GetDownloadUrl(id) {
     switch (process.platform) {
@@ -227,16 +198,6 @@ function ExecuteSetUp(download_url, version) {
             }
         });
     });
-}
-function ExecuteWebGL(version, id) {
-    switch (process.platform) {
-        case "win32":
-            break;
-        case "darwin":
-            break;
-        default:
-            break;
-    }
 }
 function Run() {
     return __awaiter(this, void 0, void 0, function () {
