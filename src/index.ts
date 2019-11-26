@@ -97,7 +97,7 @@ function GetSupportDownloadUrl(id: string) :string{
         case "win32":
             return "https://beta.unity3d.com/download/" + id + "/TargetSupportInstaller/";
         default:
-            return "https://beta.unity3d.com/download/" + id + "/";
+            return "https://beta.unity3d.com/download/" + id + "/LinuxEditorTargetInstaller/";
     }
 }
 
@@ -183,9 +183,9 @@ async function Run() {
     const id = GetSha1(version);
     core.setOutput("id", id);
     await ExecuteSetUp(GetDownloadUrl(id), version);
-    if (core.getInput("support-webgl", { required: false }) === 'true') {
+    // if (core.getInput("support-webgl", { required: false }) === 'true') {
 
-    }
+    // }
 }
 
 Run();

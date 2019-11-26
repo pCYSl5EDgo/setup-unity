@@ -139,7 +139,7 @@ function GetSupportDownloadUrl(id) {
         case "win32":
             return "https://beta.unity3d.com/download/" + id + "/TargetSupportInstaller/";
         default:
-            return "https://beta.unity3d.com/download/" + id + "/";
+            return "https://beta.unity3d.com/download/" + id + "/LinuxEditorTargetInstaller/";
     }
 }
 function ExecuteSetUp(download_url, version) {
@@ -250,8 +250,6 @@ function Run() {
                     return [4 /*yield*/, ExecuteSetUp(GetDownloadUrl(id), version)];
                 case 1:
                     _a.sent();
-                    if (core.getInput("support-webgl", { required: false }) === 'true') {
-                    }
                     return [2 /*return*/];
             }
         });
