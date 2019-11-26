@@ -95,7 +95,7 @@ async function ExecuteSetUp(download_url: string, version: string) {
         case "win32":
             await exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile UnitySetup64.exe');
             await exec.exec('UnitySetup64.exe /S /D="C:\Program Files\Unity"');
-            await exec.exec('Remove-Item -Path UnitySetup64.exe')
+            //await exec.exec('Remove-Item -Path UnitySetup64.exe')
             break;
         case "darwin":
             await exec.exec('curl -OL ' + download_url)
