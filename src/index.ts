@@ -93,7 +93,8 @@ function GetDownloadUrl(sha1: string): string {
 async function ExecuteSetUp(download_url: string, version: string) {
     switch (process.platform) {
         case "win32":
-            cp.execSync('bitsadmin /TRANSFER bj /download /priority normal ' + download_url + ' %CD%\\UnitySetup64.exe');
+            await exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile ./UnitySetup64.exe');
+            //cp.execSync('bitsadmin /TRANSFER bj /download /priority normal ' + download_url + ' %CD%\\UnitySetup64.exe');
             cp.execSync('UnitySetup64.exe /UI=reduced /S /D=C:\\Program Files\\Unity');
             break;
         case "darwin":
