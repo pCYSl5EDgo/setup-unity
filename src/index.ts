@@ -99,8 +99,7 @@ async function ExecuteSetUp(download_url: string, version: string) {
             // 上記のInvoke-WebRequestにすると2018.3.7f1をダウンロードしてくるのだ。
             // Unity2020を要求しているのにも関わらず！
             // しょうがないからbitsadminする他無い！            
-            //cp.execSync('bitsadmin /TRANSFER bj /download /priority normal ' + download_url + ' %CD%\\UnitySetup64.exe');
-            await exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile ./UnitySetup64.exe -Headers @{"Cache-Control"="no-cache"}');
+            cp.execSync('bitsadmin /TRANSFER bj /download /priority normal ' + download_url + ' %CD%\\UnitySetup64.exe');
             cp.execSync('UnitySetup64.exe /UI=reduced /S /D=C:\\Program Files\\Unity');
             break;
         case "darwin":
