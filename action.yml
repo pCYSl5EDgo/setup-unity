@@ -5,6 +5,9 @@ inputs:
   unity-version:
     description: 'Unity version'
     required: true
+outputs:
+  id:
+    description: 'id'
 runs:
   using: 'node12'
   main: 'dist/index.js'

@@ -152,6 +152,7 @@ async function ExecuteSetUp(download_url: string, version: string) {
 async function Run() {
     const version = core.getInput("unity-version", { required: true });
     const sha1 = GetSha1(version);
+    core.setOutput("id", sha1);
     const download_url = GetDownloadUrl(sha1);
     await ExecuteSetUp(download_url, version);
 }

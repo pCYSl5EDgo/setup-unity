@@ -225,6 +225,7 @@ function Run() {
                 case 0:
                     version = core.getInput("unity-version", { required: true });
                     sha1 = GetSha1(version);
+                    core.setOutput("id", sha1);
                     download_url = GetDownloadUrl(sha1);
                     return [4 /*yield*/, ExecuteSetUp(download_url, version)];
                 case 1:
