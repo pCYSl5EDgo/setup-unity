@@ -5,6 +5,9 @@ inputs:
   unity-version:
     description: 'Unity version'
     required: true
+  support-webgl:
+    description: 'Support WebGL Build'
+    required: false
 outputs:
   id:
     description: 'id'

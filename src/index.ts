@@ -79,14 +79,25 @@ function GetSetUpName() {
     }
 }
 
-function GetDownloadUrl(sha1: string): string {
+function GetDownloadUrl(id: string): string {
     switch (process.platform) {
         case "darwin":
-            return "https://beta.unity3d.com/download/" + sha1 + "/MacEditorInstaller/Unity.pkg";
+            return "https://beta.unity3d.com/download/" + id + "/MacEditorInstaller/Unity.pkg";
         case "win32":
-            return "https://beta.unity3d.com/download/" + sha1 + "/Windows64EditorInstaller/UnitySetup64.exe";
+            return "https://beta.unity3d.com/download/" + id + "/Windows64EditorInstaller/UnitySetup64.exe";
         default:
-            return "https://beta.unity3d.com/download/" + sha1 + "/UnitySetup";
+            return "https://beta.unity3d.com/download/" + id + "/UnitySetup";
+    }
+}
+
+function GetSupportDownloadUrl(id: string) :string{
+    switch (process.platform) {
+        case "darwin":
+            return "https://beta.unity3d.com/download/" + id + "/MacEditorTargetInstaller/";
+        case "win32":
+            return "https://beta.unity3d.com/download/" + id + "/TargetSupportInstaller/";
+        default:
+            return "https://beta.unity3d.com/download/" + id + "/";
     }
 }
 
@@ -145,6 +156,7 @@ async function ExecuteSetUp(download_url: string, version: string) {
             cp.execSync('sudo apt-get -y install zlib1g');
             cp.execSync('sudo apt-get -y install npm');
             cp.execSync('sudo apt-get -y install debconf');
+            cp.execSync('sudo apt-get -y install libpq5');
             await exec.exec('wget ' + download_url + ' -O UnitySetUp');
             await exec.exec('sudo chmod +x UnitySetUp');
             cp.execSync('echo y | ./UnitySetUp --unattended --install-location="/opt/Unity-' + version + '"');
@@ -154,12 +166,26 @@ async function ExecuteSetUp(download_url: string, version: string) {
     }
 }
 
+function ExecuteWebGL(version: string, id: string) {
+    switch (process.platform) {
+        case "win32":
+
+            break;
+        case "darwin":
+            break;
+        default:
+            break;
+    }
+}
+
 async function Run() {
     const version = core.getInput("unity-version", { required: true });
-    const sha1 = GetSha1(version);
-    core.setOutput("id", sha1);
-    const download_url = GetDownloadUrl(sha1);
-    await ExecuteSetUp(download_url, version);
+    const id = GetSha1(version);
+    core.setOutput("id", id);
+    await ExecuteSetUp(GetDownloadUrl(id), version);
+    if (core.getInput("support-webgl", { required: false }) === 'true') {
+
+    }
 }
 
 Run();
