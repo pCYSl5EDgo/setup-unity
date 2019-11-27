@@ -181,9 +181,10 @@ function ExecuteSetUp(download_url, version) {
                     cp.execSync('sudo apt-get -y install zlib1g');
                     cp.execSync('sudo apt-get -y install npm');
                     cp.execSync('sudo apt-get -y install debconf');
-                    cp.execSync('sudo apt-get -y install libpq5');
+                    //cp.execSync('sudo apt-get -y install libpq5');
                     return [4 /*yield*/, exec.exec('wget ' + download_url + ' -O UnitySetUp')];
                 case 6:
+                    //cp.execSync('sudo apt-get -y install libpq5');
                     _b.sent();
                     return [4 /*yield*/, exec.exec('sudo chmod +x UnitySetUp')];
                 case 7:
