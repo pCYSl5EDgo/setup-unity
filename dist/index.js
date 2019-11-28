@@ -8,33 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -42,185 +15,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var core = __importStar(require("@actions/core"));
-var jsdom = __importStar(require("jsdom"));
-var sync_request_1 = __importDefault(require("sync-request"));
-var exec = __importStar(require("@actions/exec"));
-var cp = __importStar(require("child_process"));
-function GetSha1Internal(path, start) {
-    var html = sync_request_1.default("GET", path).body;
-    var dom = new jsdom.JSDOM(html);
-    var div0 = dom.window.document.getElementsByClassName("faq").item(0);
-    var div1 = div0.children.item(1);
-    var p0 = div1.children.item(0);
-    var a0 = p0.children.item(0);
-    var href = a0.href;
-    return href.substr(start, 12);
-}
-function GetSha1Final(major, minor, patch) {
-    var path = "https://unity3d.com/unity/whats-new/" + major.toString() + "." + minor.toString() + "." + patch.toString();
-    return GetSha1Internal(path, 44);
-}
-function GetSha1Alpha(version) {
-    var path = "https://unity3d.com/unity/alpha/" + version;
-    return GetSha1Internal(path, 34);
-}
-function GetSha1Beta(version) {
-    var path = "https://unity3d.com/unity/beta/" + version;
-    return GetSha1Internal(path, 34);
-}
-function GetSha1(version) {
-    var splitVersion = version.split('.');
-    var majorVersionStr = splitVersion[0];
-    var majorVersionNum = Number.parseInt(majorVersionStr);
-    if (majorVersionNum <= 2017)
-        throw new Error(majorVersionStr + " should not be less than 2018");
-    var patchVersionStr = splitVersion[2];
-    if (patchVersionStr == '0f1') {
-        return GetSha1Beta(version);
-    }
-    var indexOfAlpha = patchVersionStr.indexOf("a");
-    if (indexOfAlpha !== -1)
-        return GetSha1Alpha(version);
-    var indexOfBeta = patchVersionStr.indexOf("b");
-    if (indexOfBeta !== -1)
-        return GetSha1Beta(version);
-    var minorVersionStr = splitVersion[1];
-    var minorVersionNum = Number.parseInt(minorVersionStr);
-    var indexOfFinal = patchVersionStr.indexOf("f");
-    if (indexOfFinal === -1)
-        throw new Error("invalid version");
-    return GetSha1Final(majorVersionNum, minorVersionNum, Number.parseInt(patchVersionStr.substr(0, indexOfFinal)));
-}
-exports.GetSha1 = GetSha1;
-function GetDownloadUrl(id) {
-    switch (process.platform) {
-        case "darwin":
-            return "https://beta.unity3d.com/download/" + id + "/MacEditorInstaller/Unity.pkg";
-        case "win32":
-            return "https://beta.unity3d.com/download/" + id + "/Windows64EditorInstaller/UnitySetup64.exe";
-        default:
-            return "https://beta.unity3d.com/download/" + id + "/UnitySetup";
-    }
-}
-exports.GetDownloadUrl = GetDownloadUrl;
-function GetSupportDownloadUrl(id) {
-    switch (process.platform) {
-        case "darwin":
-            return "https://beta.unity3d.com/download/" + id + "/MacEditorTargetInstaller/";
-        case "win32":
-            return "https://beta.unity3d.com/download/" + id + "/TargetSupportInstaller/";
-        default:
-            return "https://beta.unity3d.com/download/" + id + "/LinuxEditorTargetInstaller/";
-    }
-}
-function ExecuteSetUp(download_url, version) {
-    return __awaiter(this, void 0, void 0, function () {
-        var _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    _a = process.platform;
-                    switch (_a) {
-                        case "win32": return [3 /*break*/, 1];
-                        case "darwin": return [3 /*break*/, 2];
-                    }
-                    return [3 /*break*/, 5];
-                case 1:
-                    //await exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile ./UnitySetup64.exe');
-                    // なんてことだ！
-                    // 信じられない！
-                    // 上記のInvoke-WebRequestにすると2018.3.7f1をダウンロードしてくるのだ。
-                    // Unity2020を要求しているのにも関わらず！
-                    // しょうがないからbitsadminする他無い！            
-                    cp.execSync('bitsadmin /TRANSFER bj /download /priority foreground ' + download_url + ' %CD%\\UnitySetup64.exe');
-                    cp.execSync('UnitySetup64.exe /UI=reduced /S /D=C:\\Program Files\\Unity');
-                    return [3 /*break*/, 9];
-                case 2: return [4 /*yield*/, exec.exec('curl -OL ' + download_url)];
-                case 3:
-                    _b.sent();
-                    return [4 /*yield*/, exec.exec("sudo installer -package Unity.pkg -target /")];
-                case 4:
-                    _b.sent();
-                    return [3 /*break*/, 9];
-                case 5:
-                    cp.execSync('sudo apt-get update');
-                    cp.execSync('sudo apt-get -y install gconf-service');
-                    cp.execSync('sudo apt-get -y install lib32gcc1');
-                    cp.execSync('sudo apt-get -y install lib32stdc++6');
-                    cp.execSync('sudo apt-get -y install libasound2');
-                    cp.execSync('sudo apt-get -y install libc6');
-                    cp.execSync('sudo apt-get -y install libc6-i386');
-                    cp.execSync('sudo apt-get -y install libcairo2');
-                    cp.execSync('sudo apt-get -y install libcap2');
-                    cp.execSync('sudo apt-get -y install libcups2');
-                    cp.execSync('sudo apt-get -y install libdbus-1-3');
-                    cp.execSync('sudo apt-get -y install libexpat1');
-                    cp.execSync('sudo apt-get -y install libfontconfig1');
-                    cp.execSync('sudo apt-get -y install libfreetype6');
-                    cp.execSync('sudo apt-get -y install libgcc1');
-                    cp.execSync('sudo apt-get -y install libgconf-2-4');
-                    cp.execSync('sudo apt-get -y install libgdk-pixbuf2.0-0');
-                    cp.execSync('sudo apt-get -y install libgl1-mesa-glx');
-                    cp.execSync('sudo apt-get -y install libglib2.0-0');
-                    cp.execSync('sudo apt-get -y install libglu1-mesa');
-                    cp.execSync('sudo apt-get -y install libgtk2.0-0');
-                    cp.execSync('sudo apt-get -y install libnspr4');
-                    cp.execSync('sudo apt-get -y install libnss3');
-                    cp.execSync('sudo apt-get -y install libpango1.0-0');
-                    cp.execSync('sudo apt-get -y install libstdc++6');
-                    cp.execSync('sudo apt-get -y install libx11-6');
-                    cp.execSync('sudo apt-get -y install libxcomposite1');
-                    cp.execSync('sudo apt-get -y install libxcursor1');
-                    cp.execSync('sudo apt-get -y install libxdamage1');
-                    cp.execSync('sudo apt-get -y install libxext6');
-                    cp.execSync('sudo apt-get -y install libxfixes3');
-                    cp.execSync('sudo apt-get -y install libxi6');
-                    cp.execSync('sudo apt-get -y install libxrandr2');
-                    cp.execSync('sudo apt-get -y install libxrender1');
-                    cp.execSync('sudo apt-get -y install libxtst6');
-                    cp.execSync('sudo apt-get -y install zlib1g');
-                    cp.execSync('sudo apt-get -y install npm');
-                    cp.execSync('sudo apt-get -y install debconf');
-                    //cp.execSync('sudo apt-get -y install libpq5');
-                    return [4 /*yield*/, exec.exec('wget ' + download_url + ' -O UnitySetUp')];
-                case 6:
-                    //cp.execSync('sudo apt-get -y install libpq5');
-                    _b.sent();
-                    return [4 /*yield*/, exec.exec('sudo chmod +x UnitySetUp')];
-                case 7:
-                    _b.sent();
-                    cp.execSync('echo y | ./UnitySetUp --unattended --install-location="/opt/Unity-' + version + '"');
-                    cp.execSync('mv /opt/Unity-' + version + '/ /opt/Unity/');
-                    return [4 /*yield*/, exec.exec('sudo rm -f UnitySetUp')];
-                case 8:
-                    _b.sent();
-                    return [3 /*break*/, 9];
-                case 9: return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.ExecuteSetUp = ExecuteSetUp;
+const core = __importStar(require("@actions/core"));
+const installer_1 = require("./installer");
 function Run() {
-    return __awaiter(this, void 0, void 0, function () {
-        var version, id;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    version = core.getInput("unity-version", { required: true });
-                    id = GetSha1(version);
-                    core.setOutput("id", id);
-                    return [4 /*yield*/, ExecuteSetUp(GetDownloadUrl(id), version)];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
+    return __awaiter(this, void 0, void 0, function* () {
+        const version = core.getInput("unity-version", { required: true });
+        const id = installer_1.GetSha1(version);
+        core.setOutput("id", id);
+        yield installer_1.ExecuteSetUp(installer_1.GetDownloadUrl(id), version);
     });
 }
 Run();
