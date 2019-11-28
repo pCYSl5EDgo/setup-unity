@@ -1,5 +1,5 @@
 import * as core from '@actions/core';
-import { GetSha1, ExecuteSetUp, GetDownloadUrl } from './installer';
+import { GetSha1, ExecuteSetUp, GetDownloadUrl } from './installer.js';
 
 async function Run() {
     const version = core.getInput("unity-version", { required: true });

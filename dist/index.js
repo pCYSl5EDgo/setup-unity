@@ -44,7 +44,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core = __importStar(require("@actions/core"));
-var installer_1 = require("./installer");
+var installer_js_1 = require("./installer.js");
 function Run() {
     return __awaiter(this, void 0, void 0, function () {
         var version, id;
@@ -52,9 +52,9 @@ function Run() {
             switch (_a.label) {
                 case 0:
                     version = core.getInput("unity-version", { required: true });
-                    id = installer_1.GetSha1(version);
+                    id = installer_js_1.GetSha1(version);
                     core.setOutput("id", id);
-                    return [4 /*yield*/, installer_1.ExecuteSetUp(installer_1.GetDownloadUrl(id), version)];
+                    return [4 /*yield*/, installer_js_1.ExecuteSetUp(installer_js_1.GetDownloadUrl(id), version)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];
