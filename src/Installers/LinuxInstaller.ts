@@ -103,7 +103,7 @@ export class LinuxInstaller implements Installer {
 
         cp.execSync('cat /opt/Unity/Editor/' + version + '/unity.tar.7z.* > /opt/Unity/Editor/' + version + '/all.tar.7z');
         await exec('rm -f /opt/Unity/Editor/' + version + '/unity.tar.7z.*');
-        cp.execSync('7z x /opt/Unity/Editor/' + version + '/all.tar.7z -so | tar xf - -C /opt/Unity/');
+        cp.execSync('cd /opt/Unity && 7z x ./Editor/' + version + '/all.tar.7z -so | tar xf -');
         await io.rmRF('/opt/Unity/Editor/' + version);
         return true;
     };
