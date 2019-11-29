@@ -1,7 +1,11 @@
 import { Installer } from './installer_definition';
 import { GetId } from '../utility';
-import * as exec from '@actions/exec';
+import { exec } from '@actions/exec';
 import * as cp from 'child_process';
+import { getCacheEntry, downloadCache, saveCache } from '../cacheHttpClient';
+import * as io from '@actions/io';
+import { HttpClient } from 'typed-rest-client/HttpClient';
+import * as fs from 'fs';
 
 export class LinuxInstaller implements Installer {
     version: string | undefined;
@@ -14,52 +18,107 @@ export class LinuxInstaller implements Installer {
         }
         this.version = version;
         return this.id = GetId(version);
-    }
+    };
     async ExecuteSetUp(version: string): Promise<void> {
+        if (await this.TryRestore(version)) { return; }
+        this.Install(version);
+        await this.TrySave(version);
+    };
+    async Install(version: string) {
         const download_url: string = "https://beta.unity3d.com/download/" + GetId(version) + "/UnitySetup";
-        cp.execSync('sudo apt-get update');
-        cp.execSync('sudo apt-get -y install gconf-service');
-        cp.execSync('sudo apt-get -y install lib32gcc1');
-        cp.execSync('sudo apt-get -y install lib32stdc++6');
-        cp.execSync('sudo apt-get -y install libasound2');
-        cp.execSync('sudo apt-get -y install libc6');
-        cp.execSync('sudo apt-get -y install libc6-i386');
-        cp.execSync('sudo apt-get -y install libcairo2');
-        cp.execSync('sudo apt-get -y install libcap2');
-        cp.execSync('sudo apt-get -y install libcups2');
-        cp.execSync('sudo apt-get -y install libdbus-1-3');
-        cp.execSync('sudo apt-get -y install libexpat1');
-        cp.execSync('sudo apt-get -y install libfontconfig1');
-        cp.execSync('sudo apt-get -y install libfreetype6');
-        cp.execSync('sudo apt-get -y install libgcc1');
-        cp.execSync('sudo apt-get -y install libgconf-2-4');
-        cp.execSync('sudo apt-get -y install libgdk-pixbuf2.0-0');
-        cp.execSync('sudo apt-get -y install libgl1-mesa-glx');
-        cp.execSync('sudo apt-get -y install libglib2.0-0');
-        cp.execSync('sudo apt-get -y install libglu1-mesa');
-        cp.execSync('sudo apt-get -y install libgtk2.0-0');
-        cp.execSync('sudo apt-get -y install libnspr4');
-        cp.execSync('sudo apt-get -y install libnss3');
-        cp.execSync('sudo apt-get -y install libpango1.0-0');
-        cp.execSync('sudo apt-get -y install libstdc++6');
-        cp.execSync('sudo apt-get -y install libx11-6');
-        cp.execSync('sudo apt-get -y install libxcomposite1');
-        cp.execSync('sudo apt-get -y install libxcursor1');
-        cp.execSync('sudo apt-get -y install libxdamage1');
-        cp.execSync('sudo apt-get -y install libxext6');
-        cp.execSync('sudo apt-get -y install libxfixes3');
-        cp.execSync('sudo apt-get -y install libxi6');
-        cp.execSync('sudo apt-get -y install libxrandr2');
-        cp.execSync('sudo apt-get -y install libxrender1');
-        cp.execSync('sudo apt-get -y install libxtst6');
-        cp.execSync('sudo apt-get -y install zlib1g');
-        cp.execSync('sudo apt-get -y install npm');
-        cp.execSync('sudo apt-get -y install debconf');
-        //cp.execSync('sudo apt-get -y install libpq5');
-        await exec.exec('wget ' + download_url + ' -O UnitySetUp');
-        await exec.exec('sudo chmod +x UnitySetUp');
+        await exec('sudo apt-get update');
+        await exec('sudo apt-get -y install gconf-service');
+        await exec('sudo apt-get -y install lib32gcc1');
+        await exec('sudo apt-get -y install lib32stdc++6');
+        await exec('sudo apt-get -y install libasound2');
+        await exec('sudo apt-get -y install libc6');
+        await exec('sudo apt-get -y install libc6-i386');
+        await exec('sudo apt-get -y install libcairo2');
+        await exec('sudo apt-get -y install libcap2');
+        await exec('sudo apt-get -y install libcups2');
+        await exec('sudo apt-get -y install libdbus-1-3');
+        await exec('sudo apt-get -y install libexpat1');
+        await exec('sudo apt-get -y install libfontconfig1');
+        await exec('sudo apt-get -y install libfreetype6');
+        await exec('sudo apt-get -y install libgcc1');
+        await exec('sudo apt-get -y install libgconf-2-4');
+        await exec('sudo apt-get -y install libgdk-pixbuf2.0-0');
+        await exec('sudo apt-get -y install libgl1-mesa-glx');
+        await exec('sudo apt-get -y install libglib2.0-0');
+        await exec('sudo apt-get -y install libglu1-mesa');
+        await exec('sudo apt-get -y install libgtk2.0-0');
+        await exec('sudo apt-get -y install libnspr4');
+        await exec('sudo apt-get -y install libnss3');
+        await exec('sudo apt-get -y install libpango1.0-0');
+        await exec('sudo apt-get -y install libstdc++6');
+        await exec('sudo apt-get -y install libx11-6');
+        await exec('sudo apt-get -y install libxcomposite1');
+        await exec('sudo apt-get -y install libxcursor1');
+        await exec('sudo apt-get -y install libxdamage1');
+        await exec('sudo apt-get -y install libxext6');
+        await exec('sudo apt-get -y install libxfixes3');
+        await exec('sudo apt-get -y install libxi6');
+        await exec('sudo apt-get -y install libxrandr2');
+        await exec('sudo apt-get -y install libxrender1');
+        await exec('sudo apt-get -y install libxtst6');
+        await exec('sudo apt-get -y install zlib1g');
+        await exec('sudo apt-get -y install npm');
+        await exec('sudo apt-get -y install debconf');
+        //await exec('sudo apt-get -y install libpq5');
+        await exec('wget ' + download_url + ' -O UnitySetUp');
+        await exec('sudo chmod +x UnitySetUp');
         cp.execSync('echo y | ./UnitySetUp --unattended --install-location="/opt/Unity-' + version + '"');
-        cp.execSync('mv /opt/Unity-' + version + '/ /opt/Unity/');
-        await exec.exec('sudo rm -f UnitySetUp');
+        await exec('mv /opt/Unity-' + version + '/ /opt/Unity/');
+        await exec('sudo rm -f UnitySetUp');
+    };
+    async TryRestore(version: string): Promise<boolean> {
+        const mkdirPromise = io.mkdirP('/opt/Unity/Editor/' + version);
+        try {
+            const cacheEntry = await getCacheEntry([version + "-count"]);
+            if (!cacheEntry) {
+                return false;
+            }
+            const httpClient = new HttpClient("actions/cache");
+            const split_count = Number.parseInt(await (await httpClient.get(cacheEntry.archiveLocation!)).readBody());
+            const archiveFilePromises: Promise<void>[] = new Array(split_count);
+            await mkdirPromise;
+            for (let index = 0; index < split_count; index++) {
+                const entryPromise = getCacheEntry([version + '-' + index]);
+                archiveFilePromises[index] = entryPromise.then(async (entry) => {
+                    if (!entry) throw "null entry";
+                    return await downloadCache(entry, '/opt/Unity/Editor/' + version + '/unity.tar.7z' + index);
+                });
+            }
+
+            Promise.all(archiveFilePromises);
+        } catch (error) {
+            return false;
+        }
+
+        cp.execSync('cat /opt/Unity/Editor/' + version + '/unity.tar.7z.* > /opt/Unity/Editor/' + version + '/all.tar.7z');
+        await exec('rm -f /opt/Unity/Editor/' + version + '/unity.tar.7z.*');
+        cp.execSync('7z x /opt/Unity/Editor/' + version + '/all.tar.7z -so | tar xf - -C /opt/Unity/');
+        await io.rmRF('/opt/Unity/Editor/' + version);
+        return true;
+    }
+
+    async TrySave(version: string): Promise<void> {
+        cp.execSync('tar cv - /opt/Unity/ | 7z a -si unity.tar.7z');
+        const tar7z = fs.statSync('unity.tar.7z');
+        const splitSize = 419430400;
+        const split_count = Math.ceil(tar7z.size / splitSize);
+        const promises: Promise<void>[] = new Array(split_count + 1);
+        cp.execSync('echo -n ' + split_count + ' > unitytar7zcount');
+        promises[split_count] = saveCache(fs.createReadStream('unitytar7zcount'), version + '-count');
+        for (let index = 0; index < split_count; index++) {
+            const stream = fs.createReadStream('unity.tar.7z', {
+                start: index * splitSize,
+                end: (index + 1) * splitSize - 1,
+            });
+            promises[index] = saveCache(stream, version + '-' + index);
+        }
+        return Promise.all(promises).then(async (_) => {
+            await exec('rm -f unity.tar.7z unitytar7zcount');
+        });
     }
 }
