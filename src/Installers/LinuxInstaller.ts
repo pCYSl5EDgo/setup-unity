@@ -105,9 +105,9 @@ export class LinuxInstaller implements Installer {
 
     async TrySave(version: string): Promise<void> {
         await exec('tar cf unity.tar /opt/Unity/');
-        await io.rmRF('unity.tar');
+        await exec('7z a unity.tar.7z ');;
         const tar7z = fs.statSync('unity.tar.7z');
-        const splitSize = 419430400;
+        const splitSize = 1024 * 1024 * 400;
         const split_count = Math.ceil(tar7z.size / splitSize);
         const promises: Promise<void>[] = new Array(split_count + 1);
         cp.execSync('echo -n ' + split_count + ' > unitytar7zcount');
@@ -120,7 +120,7 @@ export class LinuxInstaller implements Installer {
             promises[index] = saveCache(stream, version + '-' + index);
         }
         return Promise.all(promises).then(async (_) => {
-            await exec('rm -f unity.tar.7z unitytar7zcount unity.tar');
+            await exec('rm -f unity.tar.7z unity.tar unitytar7zcount');
         });
     }
 }
