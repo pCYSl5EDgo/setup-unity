@@ -6,9 +6,18 @@ Set up your GitHub Actions workflow with a specific version of the Unity Editor
 ### Pre-requisites
 Create a workflow `.yml` file in your repositories `.github/workflows` directory. An [example workflow](#example-workflow) is available below. For more information, reference the GitHub Help Documentation for [Creating a workflow file](https://help.github.com/en/articles/configuring-a-workflow#creating-a-workflow-file).
 
-### Inputs
+### Required Inputs
 
-* `unity-version` - Install Unity Editor version.
+* `unity-version` - Install Unity Editor version. 
+
+### Not Required Inputs
+
+* `has-webgl` - Enables WebGL build. (Linux Only)
+* `has-il2cpp` - Enables IL2CPP build. (Linux Only) (Above Unity2019.3)
+* `has-android` - Enables Android build. (Linux Only)
+* `has-ios` - Enables iOS build. (Linux Only)
+* `has-mac-mono` - Enables Mac Mono build. (Linux Only)
+* `has-windows-mono` - Enables Windows Mono build. (Linux Only)
 
 ### Outputs
 

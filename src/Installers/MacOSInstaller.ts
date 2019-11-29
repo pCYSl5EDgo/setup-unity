@@ -1,4 +1,4 @@
-import { Installer } from './installer_definition';
+import { Installer, InstallOption } from './installer_definition';
 import { GetId } from '../utility';
 import { exec } from '@actions/exec';
 
@@ -14,7 +14,7 @@ export class MacOSInstaller implements Installer {
         this.version = version;
         return this.id = GetId(version);
     }
-    async ExecuteSetUp(version: string): Promise<void> {
+    async ExecuteSetUp(version: string, option: InstallOption): Promise<void> {
         const download_url = "https://beta.unity3d.com/download/" + GetId(version) + "/MacEditorInstaller/Unity.pkg";
         await exec('curl -OL ' + download_url)
         await exec("sudo installer -package Unity.pkg -target /");

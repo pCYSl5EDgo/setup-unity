@@ -21,7 +21,7 @@ class MacOSInstaller {
         this.version = version;
         return this.id = utility_1.GetId(version);
     }
-    ExecuteSetUp(version) {
+    ExecuteSetUp(version, option) {
         return __awaiter(this, void 0, void 0, function* () {
             const download_url = "https://beta.unity3d.com/download/" + utility_1.GetId(version) + "/MacEditorInstaller/Unity.pkg";
             yield exec_1.exec('curl -OL ' + download_url);

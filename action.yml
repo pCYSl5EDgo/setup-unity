@@ -6,14 +6,29 @@ inputs:
     description: 'Unity version'
     required: true
   enable-cache:
-    description: 'enable cache(only linux) true/false'
+    description: 'enable cache(only linux) true/false(Default)'
     required: false
   install-dependencies:
-    description: 'install dependencies(only linux) true/false'
+    description: 'install dependencies(only linux) true(Default)/false'
     require: false
-  # support-webgl:
-  #   description: 'Support WebGL Build'
-  #   required: false
+  has-webgl:
+    description: 'install webgl component true/false(Default)'
+    require: false
+  has-android:
+    description: 'install android component true/false(Default)'
+    require: false
+  has-il2cpp:
+    description: 'install il2cpp component true/false(Default)'
+    require: false
+  has-ios:
+    description: 'install ios component true/false(Default)'
+    require: false
+  has-mac-mono:
+    description: 'install Mac Mono component true/false(Default)'
+    require: false
+  has-windows-mono:
+    description: 'install Windows Mono component true/false(Default)'
+    require: false
 outputs:
   id:
     description: 'id'

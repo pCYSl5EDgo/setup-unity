@@ -39,7 +39,7 @@ class LinuxInstaller {
         return this.id = utility_1.GetId(version);
     }
     ;
-    ExecuteSetUp(version) {
+    ExecuteSetUp(version, option) {
         return __awaiter(this, void 0, void 0, function* () {
             const inst_dep = core_1.getInput('install-dependencies', { required: false });
             if (!inst_dep || inst_dep == 'true') {
@@ -49,11 +49,11 @@ class LinuxInstaller {
                 if (yield this.TryRestore(version)) {
                     return;
                 }
-                yield this.Install(version);
+                yield this.Install(version, option);
                 yield this.TrySave(version);
             }
             else {
-                yield this.Install(version);
+                yield this.Install(version, option);
             }
         });
     }
@@ -102,17 +102,39 @@ class LinuxInstaller {
         });
     }
     ;
-    Install(version) {
+    Install(version, option) {
         return __awaiter(this, void 0, void 0, function* () {
             const download_url = "https://beta.unity3d.com/download/" + utility_1.GetId(version) + "/UnitySetup";
             yield exec_1.exec('wget ' + download_url + ' -O UnitySetUp');
             yield exec_1.exec('sudo chmod +x UnitySetUp');
-            cp.execSync('echo y | ./UnitySetUp --unattended --install-location="/opt/Unity-' + version + '"');
-            yield exec_1.exec('mv /opt/Unity-' + version + '/ /opt/Unity/');
-            yield exec_1.exec('sudo rm -f UnitySetUp');
+            let command = this.CreateInstallCommand(option);
+            cp.execSync(command);
         });
     }
     ;
+    CreateInstallCommand(option) {
+        let command = 'echo y | ./UnitySetUp --unattended --install-location="/opt/Unity" --components="Unity';
+        if (option["has-android"] === 'true') {
+            command += ',Android';
+        }
+        if (option["has-il2cpp"] === 'true') {
+            command += ',Linux-IL2CPP';
+        }
+        if (option["has-ios"] === 'true') {
+            command += ',iOS';
+        }
+        if (option["has-mac-mono"] === 'true') {
+            command += ',Mac-Mono';
+        }
+        if (option["has-webgl"] === 'true') {
+            command += ',WebGL';
+        }
+        if (option["has-windows-mono"] === 'true') {
+            command += ',Windows-Mono';
+        }
+        command += '"';
+        return command;
+    }
     TryRestore(version) {
         return __awaiter(this, void 0, void 0, function* () {
             const mkdirPromise = io.mkdirP('/opt/Unity/');

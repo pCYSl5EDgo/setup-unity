@@ -1,4 +1,4 @@
-import { Installer } from './installer_definition';
+import { Installer, InstallOption } from './installer_definition';
 import { GetId } from '../utility';
 import { exec } from '@actions/exec';
 import * as cp from 'child_process';
@@ -15,7 +15,7 @@ export class LinuxInstaller implements Installer {
     }
     version: string | undefined;
     id: string | undefined;
-    key: string;
+    private key: string;
     GetId(version: string): string {
         if (this.version === version) {
             if (this.id)
@@ -25,21 +25,22 @@ export class LinuxInstaller implements Installer {
         this.version = version;
         return this.id = GetId(version);
     };
-    async ExecuteSetUp(version: string): Promise<void> {
+    async ExecuteSetUp(version: string, option: InstallOption): Promise<void> {
         const inst_dep = getInput('install-dependencies', { required: false });
+
         if (!inst_dep || inst_dep == 'true') {
             await this.InstallDependencies();
         }
         if (getInput('enable-cache', { required: false }) == 'true') {
             if (await this.TryRestore(version)) { return; }
-            await this.Install(version);
+            await this.Install(version, option);
             await this.TrySave(version);
         }
         else {
-            await this.Install(version);
+            await this.Install(version, option);
         }
     };
-    async InstallDependencies(): Promise<void> {
+    private async InstallDependencies(): Promise<void> {
         await exec('sudo apt-get update');
         cp.execSync('sudo apt-get -y install gconf-service');
         cp.execSync('sudo apt-get -y install lib32gcc1');
@@ -80,15 +81,38 @@ export class LinuxInstaller implements Installer {
         cp.execSync('sudo apt-get -y install debconf');
         //cp.execSync('sudo apt-get -y install libpq5');
     };
-    async Install(version: string) {
+    private async Install(version: string, option: InstallOption) {
         const download_url: string = "https://beta.unity3d.com/download/" + GetId(version) + "/UnitySetup";
         await exec('wget ' + download_url + ' -O UnitySetUp');
         await exec('sudo chmod +x UnitySetUp');
-        cp.execSync('echo y | ./UnitySetUp --unattended --install-location="/opt/Unity-' + version + '"');
-        await exec('mv /opt/Unity-' + version + '/ /opt/Unity/');
-        await exec('sudo rm -f UnitySetUp');
+        let command = this.CreateInstallCommand(option);
+        cp.execSync(command);
     };
-    async TryRestore(version: string): Promise<boolean> {
+    private CreateInstallCommand(option: InstallOption) {
+        let command = 'echo y | ./UnitySetUp --unattended --install-location="/opt/Unity" --components="Unity';
+        if (option["has-android"] === 'true') {
+            command += ',Android';
+        }
+        if (option["has-il2cpp"] === 'true') {
+            command += ',Linux-IL2CPP';
+        }
+        if (option["has-ios"] === 'true') {
+            command += ',iOS';
+        }
+        if (option["has-mac-mono"] === 'true') {
+            command += ',Mac-Mono';
+        }
+        if (option["has-webgl"] === 'true') {
+            command += ',WebGL';
+        }
+        if (option["has-windows-mono"] === 'true') {
+            command += ',Windows-Mono';
+        }
+        command += '"';
+        return command;
+    }
+
+    private async TryRestore(version: string): Promise<boolean> {
         const mkdirPromise = io.mkdirP('/opt/Unity/');
         try {
             const cacheEntry = await getCacheEntry([GetCacheKeyCount(this.key, version)]);
@@ -118,7 +142,7 @@ export class LinuxInstaller implements Installer {
         // cp.execSync('rm -rf /opt/Unity/ && mv -T /opt/Unity-' + version + ' /opt/Unity/');
         return true;
     };
-    async TrySave(version: string): Promise<void> {
+    private async TrySave(version: string): Promise<void> {
         cp.execSync('cd /opt/Unity/ && tar cf unity.tar *');
         await exec('mv -f /opt/Unity/unity.tar ./unity.tar');
         await exec('7z a unity.tar.7z unity.tar');

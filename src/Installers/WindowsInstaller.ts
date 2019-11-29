@@ -1,4 +1,4 @@
-import { Installer } from './installer_definition';
+import { Installer, InstallOption } from './installer_definition';
 import { GetId } from '../utility';
 import { execSync } from 'child_process';
 
@@ -14,7 +14,7 @@ export class WindowsInstaller implements Installer {
         this.version = version;
         return this.id = GetId(version);
     }
-    async ExecuteSetUp(version: string): Promise<void> {
+    async ExecuteSetUp(version: string, option: InstallOption): Promise<void> {
         const download_url = "https://beta.unity3d.com/download/" + GetId(version) + "/Windows64EditorInstaller/UnitySetup64.exe"
 
         //await exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile ./UnitySetup64.exe');

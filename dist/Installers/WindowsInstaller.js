@@ -21,7 +21,7 @@ class WindowsInstaller {
         this.version = version;
         return this.id = utility_1.GetId(version);
     }
-    ExecuteSetUp(version) {
+    ExecuteSetUp(version, option) {
         return __awaiter(this, void 0, void 0, function* () {
             const download_url = "https://beta.unity3d.com/download/" + utility_1.GetId(version) + "/Windows64EditorInstaller/UnitySetup64.exe";
             //await exec.exec('Invoke-WebRequest -Uri ' + download_url + ' -OutFile ./UnitySetup64.exe');
