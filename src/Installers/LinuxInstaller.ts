@@ -6,7 +6,7 @@ import { getCacheEntry, downloadCache, saveCache } from '../cacheHttpClient';
 import * as io from '@actions/io';
 import { HttpClient } from 'typed-rest-client/HttpClient';
 import * as fs from 'fs';
-import { defaultCoreCipherList } from 'constants';
+import { info } from '@actions/core';
 
 export class LinuxInstaller implements Installer {
     version: string | undefined;
@@ -119,6 +119,7 @@ export class LinuxInstaller implements Installer {
             });
             promises[index] = saveCache(stream, version + '-' + index);
         }
+        info('Issue all save cache');
         return Promise.all(promises).then(async (_) => {
             await exec('rm -f unity.tar.7z unity.tar unitytar7zcount');
         });

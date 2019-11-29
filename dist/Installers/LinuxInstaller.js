@@ -23,6 +23,7 @@ const cacheHttpClient_1 = require("../cacheHttpClient");
 const io = __importStar(require("@actions/io"));
 const HttpClient_1 = require("typed-rest-client/HttpClient");
 const fs = __importStar(require("fs"));
+const core_1 = require("@actions/core");
 class LinuxInstaller {
     GetId(version) {
         if (this.version === version) {
@@ -144,6 +145,7 @@ class LinuxInstaller {
                 });
                 promises[index] = cacheHttpClient_1.saveCache(stream, version + '-' + index);
             }
+            core_1.info('Issue all save cache');
             return Promise.all(promises).then((_) => __awaiter(this, void 0, void 0, function* () {
                 yield exec_1.exec('rm -f unity.tar.7z unity.tar unitytar7zcount');
             }));
