@@ -26,7 +26,8 @@ export class LinuxInstaller implements Installer {
         return this.id = GetId(version);
     };
     async ExecuteSetUp(version: string): Promise<void> {
-        if (getInput('install-dependencies', { required: false }) == 'true') {
+        const inst_dep = getInput('install-dependencies', { required: false });
+        if (!inst_dep || inst_dep == 'true') {
             await this.InstallDependencies();
         }
         if (getInput('enable-cache', { required: false }) == 'true') {

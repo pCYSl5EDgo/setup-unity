@@ -41,7 +41,8 @@ class LinuxInstaller {
     ;
     ExecuteSetUp(version) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (core_1.getInput('install-dependencies', { required: false }) == 'true') {
+            const inst_dep = core_1.getInput('install-dependencies', { required: false });
+            if (!inst_dep || inst_dep == 'true') {
                 yield this.InstallDependencies();
             }
             if (core_1.getInput('enable-cache', { required: false }) == 'true') {
