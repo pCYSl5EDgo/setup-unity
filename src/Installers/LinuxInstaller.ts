@@ -7,6 +7,7 @@ import * as io from '@actions/io';
 import { HttpClient } from 'typed-rest-client/HttpClient';
 import * as fs from 'fs';
 import { info } from '@actions/core';
+import { GetCacheKeyVersionIndex, GetCacheKeyCount } from './cache_version';
 
 export class LinuxInstaller implements Installer {
     version: string | undefined;
@@ -75,7 +76,7 @@ export class LinuxInstaller implements Installer {
     async TryRestore(version: string): Promise<boolean> {
         const mkdirPromise = io.mkdirP('/opt/Unity/Editor/' + version);
         try {
-            const cacheEntry = await getCacheEntry(['v' + version + "-count"]);
+            const cacheEntry = await getCacheEntry([GetCacheKeyCount(version)]);
             if (!cacheEntry) {
                 return false;
             }
@@ -84,13 +85,12 @@ export class LinuxInstaller implements Installer {
             const archiveFilePromises: Promise<void>[] = new Array(split_count);
             await mkdirPromise;
             for (let index = 0; index < split_count; index++) {
-                const entryPromise = getCacheEntry(['v' + version + '-' + index]);
+                const entryPromise = getCacheEntry([GetCacheKeyVersionIndex(version, index)]);
                 archiveFilePromises[index] = entryPromise.then(async (entry) => {
                     if (!entry) throw "null entry";
                     return await downloadCache(entry, '/opt/Unity/Editor/' + version + '/unity.tar.7z' + index);
                 });
             }
-
             Promise.all(archiveFilePromises);
         } catch (error) {
             return false;
@@ -101,23 +101,23 @@ export class LinuxInstaller implements Installer {
         cp.execSync('7z x /opt/Unity/Editor/' + version + '/all.tar.7z -so | tar xf - -C /opt/Unity/');
         await io.rmRF('/opt/Unity/Editor/' + version);
         return true;
-    }
-
+    };
     async TrySave(version: string): Promise<void> {
-        await exec('tar cf unity.tar /opt/Unity/');
-        await exec('7z a unity.tar.7z ');
+        cp.execSync('cd /opt/Unity/ && tar cf unity.tar *');
+        await exec('mv -f /opt/Unity/unity.tar ./unity.tar');
+        await exec('7z a unity.tar.7z unity.tar');
         const tar7z = fs.statSync('unity.tar.7z');
         const splitSize = 1024 * 1024 * 400;
         const split_count = Math.ceil(tar7z.size / splitSize);
         const promises: Promise<void>[] = new Array(split_count + 1);
         cp.execSync('echo -n ' + split_count + ' > unitytar7zcount');
-        promises[split_count] = saveCache(fs.createReadStream('unitytar7zcount'), 'v' + version + '-count');
+        promises[split_count] = saveCache(fs.createReadStream('unitytar7zcount'), GetCacheKeyCount(version));
         for (let index = 0; index < split_count; index++) {
             const stream = fs.createReadStream('unity.tar.7z', {
                 start: index * splitSize,
                 end: (index + 1) * splitSize - 1,
             });
-            promises[index] = saveCache(stream, 'v' + version + '-' + index);
+            promises[index] = saveCache(stream, GetCacheKeyVersionIndex(version, index));
         }
         info('Issue all save cache');
         return Promise.all(promises).then(async (_) => {

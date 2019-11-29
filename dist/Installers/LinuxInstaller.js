@@ -24,6 +24,7 @@ const io = __importStar(require("@actions/io"));
 const HttpClient_1 = require("typed-rest-client/HttpClient");
 const fs = __importStar(require("fs"));
 const core_1 = require("@actions/core");
+const cache_version_1 = require("./cache_version");
 class LinuxInstaller {
     GetId(version) {
         if (this.version === version) {
@@ -99,7 +100,7 @@ class LinuxInstaller {
         return __awaiter(this, void 0, void 0, function* () {
             const mkdirPromise = io.mkdirP('/opt/Unity/Editor/' + version);
             try {
-                const cacheEntry = yield cacheHttpClient_1.getCacheEntry(['v' + version + "-count"]);
+                const cacheEntry = yield cacheHttpClient_1.getCacheEntry([cache_version_1.GetCacheKeyCount(version)]);
                 if (!cacheEntry) {
                     return false;
                 }
@@ -108,7 +109,7 @@ class LinuxInstaller {
                 const archiveFilePromises = new Array(split_count);
                 yield mkdirPromise;
                 for (let index = 0; index < split_count; index++) {
-                    const entryPromise = cacheHttpClient_1.getCacheEntry(['v' + version + '-' + index]);
+                    const entryPromise = cacheHttpClient_1.getCacheEntry([cache_version_1.GetCacheKeyVersionIndex(version, index)]);
                     archiveFilePromises[index] = entryPromise.then((entry) => __awaiter(this, void 0, void 0, function* () {
                         if (!entry)
                             throw "null entry";
@@ -127,22 +128,24 @@ class LinuxInstaller {
             return true;
         });
     }
+    ;
     TrySave(version) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield exec_1.exec('tar cf unity.tar /opt/Unity/');
-            yield exec_1.exec('7z a unity.tar.7z ');
+            cp.execSync('cd /opt/Unity/ && tar cf unity.tar *');
+            yield exec_1.exec('mv -f /opt/Unity/unity.tar ./unity.tar');
+            yield exec_1.exec('7z a unity.tar.7z unity.tar');
             const tar7z = fs.statSync('unity.tar.7z');
             const splitSize = 1024 * 1024 * 400;
             const split_count = Math.ceil(tar7z.size / splitSize);
             const promises = new Array(split_count + 1);
             cp.execSync('echo -n ' + split_count + ' > unitytar7zcount');
-            promises[split_count] = cacheHttpClient_1.saveCache(fs.createReadStream('unitytar7zcount'), 'v' + version + '-count');
+            promises[split_count] = cacheHttpClient_1.saveCache(fs.createReadStream('unitytar7zcount'), cache_version_1.GetCacheKeyCount(version));
             for (let index = 0; index < split_count; index++) {
                 const stream = fs.createReadStream('unity.tar.7z', {
                     start: index * splitSize,
                     end: (index + 1) * splitSize - 1,
                 });
-                promises[index] = cacheHttpClient_1.saveCache(stream, 'v' + version + '-' + index);
+                promises[index] = cacheHttpClient_1.saveCache(stream, cache_version_1.GetCacheKeyVersionIndex(version, index));
             }
             core_1.info('Issue all save cache');
             return Promise.all(promises).then((_) => __awaiter(this, void 0, void 0, function* () {
