@@ -1,11 +1,11 @@
 import * as core from '@actions/core';
-import { GetSha1, ExecuteSetUp, GetDownloadUrl } from './installer';
+import { CreateInstaller } from './Installers/installer';
 
 async function Run() {
     const version = core.getInput("unity-version", { required: true });
-    const id = GetSha1(version);
-    core.setOutput("id", id);
-    await ExecuteSetUp(GetDownloadUrl(id), version);
+    const unityInstaller = CreateInstaller();
+    core.setOutput("id", unityInstaller.GetId(version));
+    await unityInstaller.ExecuteSetUp(version);
 }
 
 Run();

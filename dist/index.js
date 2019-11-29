@@ -17,13 +17,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(require("@actions/core"));
-const installer_1 = require("./installer");
+const installer_1 = require("./Installers/installer");
 function Run() {
     return __awaiter(this, void 0, void 0, function* () {
         const version = core.getInput("unity-version", { required: true });
-        const id = installer_1.GetSha1(version);
-        core.setOutput("id", id);
-        yield installer_1.ExecuteSetUp(installer_1.GetDownloadUrl(id), version);
+        const unityInstaller = installer_1.CreateInstaller();
+        core.setOutput("id", unityInstaller.GetId(version));
+        yield unityInstaller.ExecuteSetUp(version);
     });
 }
 Run();
