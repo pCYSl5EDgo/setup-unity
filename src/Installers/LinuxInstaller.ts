@@ -8,6 +8,7 @@ import { HttpClient } from 'typed-rest-client/HttpClient';
 import * as fs from 'fs';
 import { info, getInput } from '@actions/core';
 import { GetCacheKeyVersionIndex, GetCacheKeyCount } from './cache_version';
+import { defaultCoreCipherList } from 'constants';
 
 export class LinuxInstaller implements Installer {
     version: string | undefined;
@@ -24,7 +25,7 @@ export class LinuxInstaller implements Installer {
     async ExecuteSetUp(version: string): Promise<void> {
         if (getInput('enable-cache', { required: false }) == 'true') {
             if (await this.TryRestore(version)) { return; }
-            this.Install(version);
+            await this.Install(version);
             await this.TrySave(version);
         }
         else {

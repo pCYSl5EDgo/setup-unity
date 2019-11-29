@@ -42,7 +42,7 @@ class LinuxInstaller {
                 if (yield this.TryRestore(version)) {
                     return;
                 }
-                this.Install(version);
+                yield this.Install(version);
                 yield this.TrySave(version);
             }
             else {
