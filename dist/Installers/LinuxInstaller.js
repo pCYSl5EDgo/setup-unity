@@ -38,16 +38,17 @@ class LinuxInstaller {
     ;
     ExecuteSetUp(version) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (core_1.getInput('install-dependencies', { required: false }) == 'true') {
+                yield this.InstallDependencies();
+            }
             if (core_1.getInput('enable-cache', { required: false }) == 'true') {
                 if (yield this.TryRestore(version)) {
                     return;
                 }
-                yield this.InstallDependencies();
                 yield this.Install(version);
                 yield this.TrySave(version);
             }
             else {
-                yield this.InstallDependencies();
                 yield this.Install(version);
             }
         });

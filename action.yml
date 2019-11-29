@@ -8,6 +8,9 @@ inputs:
   enable-cache:
     description: 'enable cache(only linux) true/false'
     required: false
+  install-dependencies:
+    description: 'install dependencies(only linux) true/false'
+    require: false
   # support-webgl:
   #   description: 'Support WebGL Build'
   #   required: false

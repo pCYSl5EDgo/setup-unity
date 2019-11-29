@@ -22,14 +22,15 @@ export class LinuxInstaller implements Installer {
         return this.id = GetId(version);
     };
     async ExecuteSetUp(version: string): Promise<void> {
+        if (getInput('install-dependencies', { required: false }) == 'true') {
+            await this.InstallDependencies();
+        }
         if (getInput('enable-cache', { required: false }) == 'true') {
             if (await this.TryRestore(version)) { return; }
-            await this.InstallDependencies();
             await this.Install(version);
             await this.TrySave(version);
         }
         else {
-            await this.InstallDependencies();
             await this.Install(version);
         }
     };
