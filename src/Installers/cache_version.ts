@@ -1,7 +1,7 @@
-export function GetCacheKeyVersionIndex(version: string, index: number):string {
-    return 'LLV' + version + '-' + index;
+export function GetCacheKeyVersionIndex(key: string | undefined, version: string, index: number):string {
+    return key + version + '-' + index;
 }
 
-export function GetCacheKeyCount(version: string):string {
-    return 'LV' + version + "-count";
+export function GetCacheKeyCount(key: string | undefined, version: string):string {
+    return key + version + "-count";
 }

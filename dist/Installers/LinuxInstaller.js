@@ -26,6 +26,9 @@ const fs = __importStar(require("fs"));
 const core_1 = require("@actions/core");
 const cache_version_1 = require("./cache_version");
 class LinuxInstaller {
+    constructor() {
+        this.key = 'll';
+    }
     GetId(version) {
         if (this.version === version) {
             if (this.id)
@@ -111,9 +114,9 @@ class LinuxInstaller {
     ;
     TryRestore(version) {
         return __awaiter(this, void 0, void 0, function* () {
-            const mkdirPromise = io.mkdirP('/opt/Unity/Editor/' + version);
+            const mkdirPromise = io.mkdirP('/opt/Unity/');
             try {
-                const cacheEntry = yield cacheHttpClient_1.getCacheEntry([cache_version_1.GetCacheKeyCount(version)]);
+                const cacheEntry = yield cacheHttpClient_1.getCacheEntry([cache_version_1.GetCacheKeyCount(this.key, version)]);
                 if (!cacheEntry) {
                     return false;
                 }
@@ -122,11 +125,11 @@ class LinuxInstaller {
                 const archiveFilePromises = new Array(split_count);
                 yield mkdirPromise;
                 for (let index = 0; index < split_count; index++) {
-                    const entryPromise = cacheHttpClient_1.getCacheEntry([cache_version_1.GetCacheKeyVersionIndex(version, index)]);
+                    const entryPromise = cacheHttpClient_1.getCacheEntry([cache_version_1.GetCacheKeyVersionIndex(this.key, version, index)]);
                     archiveFilePromises[index] = entryPromise.then((entry) => __awaiter(this, void 0, void 0, function* () {
                         if (!entry)
                             throw "null entry";
-                        return yield cacheHttpClient_1.downloadCache(entry, '/opt/Unity/Editor/' + version + '/unity.tar.7z' + index);
+                        return yield cacheHttpClient_1.downloadCache(entry, 'unity.tar.7z' + index);
                     }));
                 }
                 Promise.all(archiveFilePromises);
@@ -134,9 +137,10 @@ class LinuxInstaller {
             catch (error) {
                 return false;
             }
-            cp.execSync('cat /opt/Unity/Editor/' + version + '/unity.tar.7z.* > /opt/Unity/Editor/' + version + '/all.tar.7z');
-            yield exec_1.exec('rm -f /opt/Unity/Editor/' + version + '/unity.tar.7z.*');
-            cp.execSync('cd /opt/Unity && 7z x ./Editor/' + version + '/all.tar.7z -so | tar xf -');
+            cp.execSync('cat unity.tar.7z* > all.tar.7z');
+            yield exec_1.exec('7z x all.tar.7z -o/opt/Unity/all.tar');
+            cp.execSync('cd /opt/Unity/ && tar xf all.tar');
+            yield exec_1.exec('rm -f unity.tar.7z* all.tar.7z /opt/Unity/all.tar');
             // cp.execSync('rm -rf /opt/Unity/ && mv -T /opt/Unity-' + version + ' /opt/Unity/');
             return true;
         });
@@ -152,13 +156,13 @@ class LinuxInstaller {
             const split_count = Math.ceil(tar7z.size / splitSize);
             const promises = new Array(split_count + 1);
             cp.execSync('echo -n ' + split_count + ' > unitytar7zcount');
-            promises[split_count] = cacheHttpClient_1.saveCache(fs.createReadStream('unitytar7zcount'), cache_version_1.GetCacheKeyCount(version));
+            promises[split_count] = cacheHttpClient_1.saveCache(fs.createReadStream('unitytar7zcount'), cache_version_1.GetCacheKeyCount(this.key, version));
             for (let index = 0; index < split_count; index++) {
                 const stream = fs.createReadStream('unity.tar.7z', {
                     start: index * splitSize,
                     end: (index + 1) * splitSize - 1,
                 });
-                promises[index] = cacheHttpClient_1.saveCache(stream, cache_version_1.GetCacheKeyVersionIndex(version, index));
+                promises[index] = cacheHttpClient_1.saveCache(stream, cache_version_1.GetCacheKeyVersionIndex(this.key, version, index));
             }
             core_1.info('Issue all save cache');
             return Promise.all(promises).then((_) => __awaiter(this, void 0, void 0, function* () {
