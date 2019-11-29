@@ -38,11 +38,16 @@ class LinuxInstaller {
     ;
     ExecuteSetUp(version) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (yield this.TryRestore(version)) {
-                return;
+            if (core_1.getInput('enable-cache', { required: false }) == 'true') {
+                if (yield this.TryRestore(version)) {
+                    return;
+                }
+                this.Install(version);
+                yield this.TrySave(version);
             }
-            this.Install(version);
-            yield this.TrySave(version);
+            else {
+                this.Install(version);
+            }
         });
     }
     ;

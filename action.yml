@@ -5,6 +5,9 @@ inputs:
   unity-version:
     description: 'Unity version'
     required: true
+  enable-cache:
+    description: 'enable cache(only linux) true/false'
+    required: false
   # support-webgl:
   #   description: 'Support WebGL Build'
   #   required: false

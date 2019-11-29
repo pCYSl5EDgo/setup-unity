@@ -6,7 +6,7 @@ import { getCacheEntry, downloadCache, saveCache } from '../cacheHttpClient';
 import * as io from '@actions/io';
 import { HttpClient } from 'typed-rest-client/HttpClient';
 import * as fs from 'fs';
-import { info } from '@actions/core';
+import { info, getInput } from '@actions/core';
 import { GetCacheKeyVersionIndex, GetCacheKeyCount } from './cache_version';
 
 export class LinuxInstaller implements Installer {
@@ -22,9 +22,14 @@ export class LinuxInstaller implements Installer {
         return this.id = GetId(version);
     };
     async ExecuteSetUp(version: string): Promise<void> {
-        if (await this.TryRestore(version)) { return; }
-        this.Install(version);
-        await this.TrySave(version);
+        if (getInput('enable-cache', { required: false }) == 'true') {
+            if (await this.TryRestore(version)) { return; }
+            this.Install(version);
+            await this.TrySave(version);
+        }
+        else {
+            this.Install(version);
+        }
     };
     async Install(version: string) {
         const download_url: string = "https://beta.unity3d.com/download/" + GetId(version) + "/UnitySetup";
