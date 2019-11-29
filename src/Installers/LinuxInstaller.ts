@@ -75,7 +75,7 @@ export class LinuxInstaller implements Installer {
     async TryRestore(version: string): Promise<boolean> {
         const mkdirPromise = io.mkdirP('/opt/Unity/Editor/' + version);
         try {
-            const cacheEntry = await getCacheEntry([version + "-count"]);
+            const cacheEntry = await getCacheEntry(['v' + version + "-count"]);
             if (!cacheEntry) {
                 return false;
             }
@@ -84,7 +84,7 @@ export class LinuxInstaller implements Installer {
             const archiveFilePromises: Promise<void>[] = new Array(split_count);
             await mkdirPromise;
             for (let index = 0; index < split_count; index++) {
-                const entryPromise = getCacheEntry([version + '-' + index]);
+                const entryPromise = getCacheEntry(['v' + version + '-' + index]);
                 archiveFilePromises[index] = entryPromise.then(async (entry) => {
                     if (!entry) throw "null entry";
                     return await downloadCache(entry, '/opt/Unity/Editor/' + version + '/unity.tar.7z' + index);
@@ -105,19 +105,19 @@ export class LinuxInstaller implements Installer {
 
     async TrySave(version: string): Promise<void> {
         await exec('tar cf unity.tar /opt/Unity/');
-        await exec('7z a unity.tar.7z ');;
+        await exec('7z a unity.tar.7z ');
         const tar7z = fs.statSync('unity.tar.7z');
         const splitSize = 1024 * 1024 * 400;
         const split_count = Math.ceil(tar7z.size / splitSize);
         const promises: Promise<void>[] = new Array(split_count + 1);
         cp.execSync('echo -n ' + split_count + ' > unitytar7zcount');
-        promises[split_count] = saveCache(fs.createReadStream('unitytar7zcount'), version + '-count');
+        promises[split_count] = saveCache(fs.createReadStream('unitytar7zcount'), 'v' + version + '-count');
         for (let index = 0; index < split_count; index++) {
             const stream = fs.createReadStream('unity.tar.7z', {
                 start: index * splitSize,
                 end: (index + 1) * splitSize - 1,
             });
-            promises[index] = saveCache(stream, version + '-' + index);
+            promises[index] = saveCache(stream, 'v' + version + '-' + index);
         }
         info('Issue all save cache');
         return Promise.all(promises).then(async (_) => {

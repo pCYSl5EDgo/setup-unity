@@ -99,7 +99,7 @@ class LinuxInstaller {
         return __awaiter(this, void 0, void 0, function* () {
             const mkdirPromise = io.mkdirP('/opt/Unity/Editor/' + version);
             try {
-                const cacheEntry = yield cacheHttpClient_1.getCacheEntry([version + "-count"]);
+                const cacheEntry = yield cacheHttpClient_1.getCacheEntry(['v' + version + "-count"]);
                 if (!cacheEntry) {
                     return false;
                 }
@@ -108,7 +108,7 @@ class LinuxInstaller {
                 const archiveFilePromises = new Array(split_count);
                 yield mkdirPromise;
                 for (let index = 0; index < split_count; index++) {
-                    const entryPromise = cacheHttpClient_1.getCacheEntry([version + '-' + index]);
+                    const entryPromise = cacheHttpClient_1.getCacheEntry(['v' + version + '-' + index]);
                     archiveFilePromises[index] = entryPromise.then((entry) => __awaiter(this, void 0, void 0, function* () {
                         if (!entry)
                             throw "null entry";
@@ -131,19 +131,18 @@ class LinuxInstaller {
         return __awaiter(this, void 0, void 0, function* () {
             yield exec_1.exec('tar cf unity.tar /opt/Unity/');
             yield exec_1.exec('7z a unity.tar.7z ');
-            ;
             const tar7z = fs.statSync('unity.tar.7z');
             const splitSize = 1024 * 1024 * 400;
             const split_count = Math.ceil(tar7z.size / splitSize);
             const promises = new Array(split_count + 1);
             cp.execSync('echo -n ' + split_count + ' > unitytar7zcount');
-            promises[split_count] = cacheHttpClient_1.saveCache(fs.createReadStream('unitytar7zcount'), version + '-count');
+            promises[split_count] = cacheHttpClient_1.saveCache(fs.createReadStream('unitytar7zcount'), 'v' + version + '-count');
             for (let index = 0; index < split_count; index++) {
                 const stream = fs.createReadStream('unity.tar.7z', {
                     start: index * splitSize,
                     end: (index + 1) * splitSize - 1,
                 });
-                promises[index] = cacheHttpClient_1.saveCache(stream, version + '-' + index);
+                promises[index] = cacheHttpClient_1.saveCache(stream, 'v' + version + '-' + index);
             }
             core_1.info('Issue all save cache');
             return Promise.all(promises).then((_) => __awaiter(this, void 0, void 0, function* () {
