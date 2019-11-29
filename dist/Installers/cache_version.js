@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function GetCacheKeyVersionIndex(version, index) {
-    return 'Linux-v' + version + '-' + index;
+    return 'LLV' + version + '-' + index;
 }
 exports.GetCacheKeyVersionIndex = GetCacheKeyVersionIndex;
 function GetCacheKeyCount(version) {
-    return 'Linux-v' + version + "-count";
+    return 'LV' + version + "-count";
 }
 exports.GetCacheKeyCount = GetCacheKeyCount;

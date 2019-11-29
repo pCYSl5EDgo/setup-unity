@@ -128,8 +128,8 @@ class LinuxInstaller {
             }
             cp.execSync('cat /opt/Unity/Editor/' + version + '/unity.tar.7z.* > /opt/Unity/Editor/' + version + '/all.tar.7z');
             yield exec_1.exec('rm -f /opt/Unity/Editor/' + version + '/unity.tar.7z.*');
-            cp.execSync('cd /opt/ && 7z x ./Unity/Editor/' + version + '/all.tar.7z -so | tar xf -');
-            cp.execSync('rm -rf /opt/Unity/ && mv -T /opt/Unity-' + version + ' /opt/Unity/');
+            cp.execSync('cd /opt/Unity && 7z x ./Editor/' + version + '/all.tar.7z -so | tar xf -');
+            // cp.execSync('rm -rf /opt/Unity/ && mv -T /opt/Unity-' + version + ' /opt/Unity/');
             return true;
         });
     }

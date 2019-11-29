@@ -1,7 +1,7 @@
 export function GetCacheKeyVersionIndex(version: string, index: number):string {
-    return 'Linux-v' + version + '-' + index;
+    return 'LLV' + version + '-' + index;
 }
 
 export function GetCacheKeyCount(version: string):string {
-    return 'Linux-v' + version + "-count";
+    return 'LV' + version + "-count";
 }
