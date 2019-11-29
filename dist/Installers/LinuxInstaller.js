@@ -129,7 +129,6 @@ class LinuxInstaller {
     TrySave(version) {
         return __awaiter(this, void 0, void 0, function* () {
             yield exec_1.exec('tar cf unity.tar /opt/Unity/');
-            yield exec_1.exec('7z a unity.tar.7z unity.tar');
             yield io.rmRF('unity.tar');
             const tar7z = fs.statSync('unity.tar.7z');
             const splitSize = 419430400;
@@ -145,7 +144,7 @@ class LinuxInstaller {
                 promises[index] = cacheHttpClient_1.saveCache(stream, version + '-' + index);
             }
             return Promise.all(promises).then((_) => __awaiter(this, void 0, void 0, function* () {
-                yield exec_1.exec('rm -f unity.tar.7z unitytar7zcount');
+                yield exec_1.exec('rm -f unity.tar.7z unitytar7zcount unity.tar');
             }));
         });
     }
