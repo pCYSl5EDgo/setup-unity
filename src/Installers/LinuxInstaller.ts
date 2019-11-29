@@ -8,7 +8,6 @@ import { HttpClient } from 'typed-rest-client/HttpClient';
 import * as fs from 'fs';
 import { info, getInput } from '@actions/core';
 import { GetCacheKeyVersionIndex, GetCacheKeyCount } from './cache_version';
-import { defaultCoreCipherList } from 'constants';
 
 export class LinuxInstaller implements Installer {
     version: string | undefined;
@@ -25,15 +24,16 @@ export class LinuxInstaller implements Installer {
     async ExecuteSetUp(version: string): Promise<void> {
         if (getInput('enable-cache', { required: false }) == 'true') {
             if (await this.TryRestore(version)) { return; }
+            await this.InstallDependencies();
             await this.Install(version);
             await this.TrySave(version);
         }
         else {
-            this.Install(version);
+            await this.InstallDependencies();
+            await this.Install(version);
         }
     };
-    async Install(version: string) {
-        const download_url: string = "https://beta.unity3d.com/download/" + GetId(version) + "/UnitySetup";
+    async InstallDependencies(): Promise<void> {
         await exec('sudo apt-get update');
         cp.execSync('sudo apt-get -y install gconf-service');
         cp.execSync('sudo apt-get -y install lib32gcc1');
@@ -73,6 +73,9 @@ export class LinuxInstaller implements Installer {
         cp.execSync('sudo apt-get -y install npm');
         cp.execSync('sudo apt-get -y install debconf');
         //cp.execSync('sudo apt-get -y install libpq5');
+    };
+    async Install(version: string) {
+        const download_url: string = "https://beta.unity3d.com/download/" + GetId(version) + "/UnitySetup";
         await exec('wget ' + download_url + ' -O UnitySetUp');
         await exec('sudo chmod +x UnitySetUp');
         cp.execSync('echo y | ./UnitySetUp --unattended --install-location="/opt/Unity-' + version + '"');

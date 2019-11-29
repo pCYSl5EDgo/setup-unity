@@ -42,18 +42,19 @@ class LinuxInstaller {
                 if (yield this.TryRestore(version)) {
                     return;
                 }
+                yield this.InstallDependencies();
                 yield this.Install(version);
                 yield this.TrySave(version);
             }
             else {
-                this.Install(version);
+                yield this.InstallDependencies();
+                yield this.Install(version);
             }
         });
     }
     ;
-    Install(version) {
+    InstallDependencies() {
         return __awaiter(this, void 0, void 0, function* () {
-            const download_url = "https://beta.unity3d.com/download/" + utility_1.GetId(version) + "/UnitySetup";
             yield exec_1.exec('sudo apt-get update');
             cp.execSync('sudo apt-get -y install gconf-service');
             cp.execSync('sudo apt-get -y install lib32gcc1');
@@ -93,6 +94,12 @@ class LinuxInstaller {
             cp.execSync('sudo apt-get -y install npm');
             cp.execSync('sudo apt-get -y install debconf');
             //cp.execSync('sudo apt-get -y install libpq5');
+        });
+    }
+    ;
+    Install(version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const download_url = "https://beta.unity3d.com/download/" + utility_1.GetId(version) + "/UnitySetup";
             yield exec_1.exec('wget ' + download_url + ' -O UnitySetUp');
             yield exec_1.exec('sudo chmod +x UnitySetUp');
             cp.execSync('echo y | ./UnitySetUp --unattended --install-location="/opt/Unity-' + version + '"');
