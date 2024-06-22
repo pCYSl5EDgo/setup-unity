@@ -27,7 +27,7 @@
     "@actions/exec": "^1.0.1",
     "@actions/io": "^1.0.1",
     "@actions/tool-cache": "^1.1.2",
-    "jsdom": "^16.5.0",
+    "jsdom": "^16.7.0",
     "sync-request": "^6.1.0"
   }
 }
